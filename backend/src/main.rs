@@ -4,7 +4,7 @@ mod simulator;
 
 use serde::{Serialize, Deserialize};
 use rocket::serde::{json::Json};
-use crate::simulator::simulate_circuit;
+use crate::simulator::{simulate_circuit, test_circuit};
 
 
 #[derive(Serialize, Deserialize)]
@@ -29,8 +29,13 @@ fn submit_data(incoming_data: Json<IncomingData>) -> Json<OutgoingData> {
     Json(response)
 }
 
+#[get("/test")]
+fn test() -> String {
+    test_circuit()
+}
+
 
 #[launch]
 fn rocket() -> _ {
-    rocket::build().mount("/", routes![submit_data])
+    rocket::build().mount("/", routes![submit_data, test])
 }
