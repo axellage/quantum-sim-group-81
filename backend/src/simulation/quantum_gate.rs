@@ -4,12 +4,12 @@ use num::Complex;
 
 #[derive(Debug, Clone)]
 pub struct QuantumGate {
-    pub(crate) matrix: Array2<Complex<f64>>,
-    pub(crate) size: usize,
+    pub matrix: Array2<Complex<f64>>,
+    pub size: usize,
 }
 
 impl QuantumGate {
-    pub(crate) fn x_gate() -> QuantumGate {
+    pub fn x_gate() -> QuantumGate {
         QuantumGate {
             matrix: arr2(&[
                 [Complex::new(0.0, 0.0), Complex::new(1.0, 0.0)],
@@ -18,7 +18,7 @@ impl QuantumGate {
             size: 2,
         }
     }
-    pub(crate) fn i_gate() -> QuantumGate {
+    pub fn i_gate() -> QuantumGate {
         QuantumGate {
             matrix: arr2(&[
                 [Complex::new(1.0, 0.0), Complex::new(0.0, 0.0)],
@@ -27,7 +27,7 @@ impl QuantumGate {
             size: 2,
         }
     }
-    pub(crate) fn h_gate() -> QuantumGate {
+    pub fn h_gate() -> QuantumGate {
         QuantumGate {
             matrix: arr2(&[
                 [Complex::new(1.0, 0.0), Complex::new(1.0, 0.0)],
@@ -36,7 +36,7 @@ impl QuantumGate {
             size: 2,
         }
     }
-    pub(crate) fn cnot_gate() -> QuantumGate {
+    pub fn cnot_gate() -> QuantumGate {
         QuantumGate {
             matrix: arr2(&[
                 [

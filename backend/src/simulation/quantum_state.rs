@@ -9,11 +9,11 @@ use std::fmt;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct QuantumState {
-    pub(crate) vec: Array2<Complex<f64>>,
+    pub vec: Array2<Complex<f64>>,
 }
 
 impl QuantumState {
-    pub(crate) fn new(no_of_qubits: usize) -> QuantumState {
+    pub fn new(no_of_qubits: usize) -> QuantumState {
         let mut state = Self::ket_zero();
         for _ in 0..no_of_qubits - 1 {
             state = state.kronecker(&Self::ket_zero());
@@ -21,25 +21,25 @@ impl QuantumState {
 
         state
     }
-    pub(crate) fn ket_zero() -> QuantumState {
+    pub fn ket_zero() -> QuantumState {
         QuantumState {
             vec: arr2(&[[Complex::new(1.0, 0.0)], [Complex::new(0.0, 0.0)]]),
         }
     }
 
-    pub(crate) fn ket_one() -> QuantumState {
+    pub fn ket_one() -> QuantumState {
         QuantumState {
             vec: arr2(&[[Complex::new(0.0, 0.0)], [Complex::new(1.0, 0.0)]]),
         }
     }
 
-    pub(crate) fn kronecker(&self, other: &QuantumState) -> QuantumState {
+    pub fn kronecker(&self, other: &QuantumState) -> QuantumState {
         QuantumState {
             vec: kron(&self.vec, &other.vec),
         }
     }
 
-    pub(crate) fn apply_gate(mut self, gate: QuantumGate, index: usize) -> QuantumState {
+    pub fn apply_gate(mut self, gate: QuantumGate, index: usize) -> QuantumState {
         let length = self.vec.len();
 
         let no_of_qubits = self.vec.len().ilog2().to_usize().unwrap();
