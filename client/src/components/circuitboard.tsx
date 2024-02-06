@@ -1,12 +1,45 @@
-import React from "react";
+import React, { useState, ReactNode, useEffect } from 'react';
 import './circuitboard.css';
 
 function Circuitboard() {
-    return (
-      <div className="Circuitboard">
-       
+  const [ketLines, setKetLines] = useState<ReactNode[]>([]);
+
+  useEffect(() => {
+    // Initialize ketLines with three elements when the component mounts
+    setKetLines([
+      <div className="ket-line" key={0}>
+        <p>|0⟩</p><hr/>
+      </div>,
+      <div className="ket-line" key={1}>
+        <p>|0⟩</p><hr/>
+      </div>,
+      <div className="ket-line" key={2}>
+        <p>|0⟩</p><hr/>
       </div>
-    );
-  }
-  
-  export default Circuitboard;
+    ]);
+  }, []); // Empty dependency array to ensure this effect runs only once, on mount
+
+  const handleClick = () => {
+    if (ketLines.length < 10) {
+      setKetLines(prevKetLines => [
+        ...prevKetLines,
+        <div className="ket-line" key={prevKetLines.length}>
+          <p>|0⟩</p><hr/>
+        </div>
+      ]);
+    }
+    else {
+      //TODO make this a visible error
+      console.log("No more qubits can be added");
+    }
+  };
+
+  return (
+    <div className="Circuitboard">
+      {ketLines}
+      <button onClick={handleClick}>+</button>
+    </div>
+  );
+}
+
+export default Circuitboard;

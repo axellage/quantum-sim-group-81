@@ -1,0 +1,41 @@
+.Circuitboard {
+    background-color: #22252b;
+    padding: 2rem;
+}
+
+.ket-line {
+    display: flex;
+    align-items: center;
+}
+
+p {
+    color: white;
+    font-size: larger;
+}
+
+hr {
+    width: 80%;
+    padding: 0;
+    margin-inline-start: 2.5rem;
+}
+
+button {
+  background-color: #1A1A1A;
+  color: white;
+  cursor:pointer;
+  font-size: larger;
+}
+
+button:disabled {
+  pointer-events: none;
+}
+
+button:hover {
+  color: #fff;
+  background-color: #080808;
+}
+
+button:active {
+  box-shadow: none;
+  transform: translateY(0);
+}
