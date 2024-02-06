@@ -1,6 +1,13 @@
 .Circuitboard {
-    background-color: #22252b;
-    padding: 2rem;
+  background-color: #22252b;
+  padding: 1rem;
+  padding-left: 4rem;
+  
+}
+
+.circuit {
+  max-height: calc(7 * 3rem); /* Adjust as needed based on the height of a single ket-line */
+  overflow-y: auto;
 }
 
 .ket-line {
@@ -15,7 +22,6 @@ p {
 
 hr {
     width: 80%;
-    padding: 0;
     margin-inline-start: 2.5rem;
 }
 

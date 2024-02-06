@@ -36,7 +36,9 @@ function Circuitboard() {
 
   return (
     <div className="Circuitboard">
-      {ketLines}
+      <section className="circuit">
+        {ketLines}
+      </section>
       <button onClick={handleClick}>+</button>
     </div>
   );
