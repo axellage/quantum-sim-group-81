@@ -7,13 +7,13 @@ function Circuitboard() {
   useEffect(() => {
     // Initialize ketLines with three elements when the component mounts
     setKetLines([
-      <div className="ket-line" key={0}>
+      <div className="ket-line" data-testid="qubit-line" key={0}>
         <p>|0⟩</p><hr/>
       </div>,
-      <div className="ket-line" key={1}>
+      <div className="ket-line" data-testid="qubit-line" key={1}>
         <p>|0⟩</p><hr/>
       </div>,
-      <div className="ket-line" key={2}>
+      <div className="ket-line" data-testid="qubit-line" key={2}>
         <p>|0⟩</p><hr/>
       </div>
     ]);
@@ -23,7 +23,7 @@ function Circuitboard() {
     if (ketLines.length < 10) {
       setKetLines(prevKetLines => [
         ...prevKetLines,
-        <div className="ket-line" key={prevKetLines.length}>
+        <div className="ket-line" data-testid="qubit-line" key={prevKetLines.length}>
           <p>|0⟩</p><hr/>
         </div>
       ]);
