@@ -1,0 +1,34 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'backend/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'backend/**'
+
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Change to backend directory
+      run: cd backend
+
+    - name: Build
+      run: cargo build --verbose
+      working-directory: ./backend
+
+    - name: Run tests
+      run: cargo test --verbose
+      working-directory: ./backend
