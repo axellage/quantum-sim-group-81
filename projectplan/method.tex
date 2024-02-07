@@ -1,0 +1,46 @@
+\section{Method}
+
+\subsection{Work Flow} %% Lucas
+To implement this project, a combination of weekly meetings and deadlines for different working processes are set. The meetings serve the purpose of discussing within the group in what way we think the project should go forward and coming to an agreement upon what changes we strive to make. Because the project's implementation will be programmed, we will be using Git as our way of storing and managing code. Git also supports branching which will be especially useful for us in the later stages of the project when it is undesirable to edit in directories with large amounts of code, so instead opting to vary versions of the project seems to be safer. One of Git's most important features is that it supports versioning, which allows everyone in the project be up-to-date with the latest version of the project, in some branch.
+
+\subsection{Design and Architecture} %% Axel härifrån och ner
+The project will be implemented with a Rust back-end running a Rocket http server. We will use a REST-ful protocol when communication between front-end and back-end. We will be using open source crates such as "ndarray" to assist with operations with matrices and vectors. This choice has been made due to the fact that the time complexity of simulating qubits grows exponentially. The front-end will be build using the React framework to implement a web page with the drag and drop features of building a quantum circuit, a method of varying the time and a way of visualizing the vector describing the qubits in the system.
+
+
+\subsection{Quantum Simulation Mechanics}
+The back-end is responsible to simulate each qubit and the gates acting upon them. This is done by initially representing all gates as a matrices and the qubits as a vectors. 
+
+An important operation used in the application is the Kronecker product, it is a mathematical operation on two matrices of arbitrary size that results in a matrix with all possible products of the matrices \cite{kronecker}. Its formal definition is the following,
+
+ Let A be a $K \times L$ matrix and $B$ an $M \times N$ matrix. Then, the Kronecker product between $A$ and $B$ is the $(KM \times LM)$ block matrix:
+
+ \[
+A \otimes B = \begin{bmatrix}
+a_{11}B & \cdots & a_{1L}B \\
+\vdots & \ddots & \vdots \\
+a_{K1}B & \cdots & a_{KL}B
+\end{bmatrix}
+\]
+
+where $A_{kl}$ denotes the $(k,l) $-th entry of $A$. 
+
+By using the Kronecker product we are able to represent all qubits as a single vector of size $2^n$ where $n$ is the number of qubits in the simulation. 
+
+In the application, a 'step' of the simulation is defined as each column of the quantum circuit, as visualized in the user interface where the circuit is constructed using a grid system. The program processes each column to handle the computation of the product between the state vector and each step. This involves parsing the elements in each column of the circuit: a wire is interpreted as an identity operation, indicating that the qubit remains unchanged, while a gate is converted into its corresponding matrix representation. The next step involves computing the Kronecker product of the matrices corresponding to each element in the column. This operation results in a matrix with dimensions $2^n \times 2^n$, where $n$ denotes the number of qubits.
+
+We then go through all of the steps and multiply the state vector with the step matrix. After each multiplication, the answer is saved and stored in a response list to keep track of the state throughout the circuit. When all steps are completed the response list is returned to the front-end which completes the interaction.
+
+\subsection{Interactive Features}
+The front-end will implement several features that allows the user to construct, simulate and visualize the result of a quantum circuit. During the construction part of the simulation, all action takes place on a grid where the user can add new rows which represents qubits by clicking a plus at the bottom or removing existing qubits by clicking on them. All qubits are initially in state $\ket{0}$ and the user can then drag and drop gates from a toolbar above the grid onto the grid. Gates already on the grid can also be moved to another location or removed. 
+
+Below the grid there is a slider or a bar representing the current state being visualized by the program, this can be varied to visualise the state of the qubit throughout different parts of the circuit. Below the slider there are graphs representing data about the state vector passed from the back-end such as the amplitudes and probabilities. The user should be able to hover over parts of the simulation with an (i) to get a explanation of that part or when performing an action for the first time the user can get an explanation of what has happened.
+
+\subsection{Testing and Validation}
+During development of the simulation we will use a system of continuously integrating and testing new features. This is done by defining test cases which are quantum circuits which we know what the expected response should be. By defining several of these it is possible to test the entire application each time we add a new feature to ensure that nothing that worked before stops working. Each test case will be carefully designed to test a certain or multiple parts such as single qubit operation, testing a certain gate or functionality of applying a gate to a qubit at a certain index. Consideration will be taken when new features are integrated to implement new test cases to ensure their continuing functionality.
+
+% Hur gruppen har tänkt sig att genomföra arbetet är val av metod. I konstruktionsinriktade projekt kan detta tyckas vara självklart, men det kan även i detta fall finnas viktiga metodval. Helt litteraturbaserade kandidatarbeten är också genomförbara men även en litteraturstudie ska ha en ordnad och strukturerad arbetsprocess och metodik.
+
+%Metodavsnittet bör också beskriva hur data ska samlas in och hur det konstateras hur väl projektets mål har uppfyllts. I praktiska projekt kan detta vara genom mätningar av olika typer. Det kan också vara genom datorsimuleringar. Vilka aspekter är viktiga för att veta om syftet med projektet har uppnåtts? Datainsamling kan också vara en del av en testning eller annan utvärdering av den produkt som tas fram i ett konstruktionsinriktat projekt.
+
+%Antal studieobjekt/testfall och hur de väljs? Typ av undersökningsmetod/testmetod? Hur insamlade data/testresultat ska analyseras och presenteras? Hur ser processen ut för litteraturarbetet?
+

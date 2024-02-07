@@ -1,0 +1,28 @@
+
+
+\section{Problem}
+% Det här avsnittet är ofta den viktigaste delen av planeringsrapporten (och av den slutgiltiga uppsatsen/rapporten). Den syftar till att identifiera frågan/frågorna som ska tas upp i projektet. Det är viktigt att gruppen gör en problemanalys även om det i projektförslaget redan finns ett problem (en uppgift) specificerat. Anledningen till detta är att det riktiga primära problemet ofta skiljer sig från det i början av uppdragsgivaren/förslagsställaren/kunden föreslagna. Problemanalysen syftar också till att bryta ner problemet/uppgiften i mindre och mer detaljerade delproblem/deluppgifter, vilket också leder till formulering av delsyften. Genom att göra detta får studenterna mycket bättre förståelse för de olika aspekterna av problemet/uppgiften. Utan den här informationen är det omöjligt att identifiera vilken information som behövs, vilka informationskällor som behövs och lämpliga tillvägagångssätt.
+
+% En bra problemanalys som identifierar delproblem/deluppgifter och delsyften vilar i många fall på användning av teorier och modeller från litteraturen. En litteraturgenomgång bör därför genomföras tidigt i processen.
+
+\subsection{Conceptual Complexity}
+In classical physics, if we know the state of a system at time t=0, we can predict its state at any later time, like t=1, with certainty. Quantum physics, however, introduces non-determinism: the same initial conditions can lead to different outcomes, each with a certain probability.
+
+The probabilistic nature of the quantum realm might confuse the reader and make the concepts hard to understand at first.
+
+An example of the probabilistic nature of quantum mechanics is when we measure a qubit that is in a superposition. In quantum computing, a qubits state is described as a superposition of $\ket{0}$ and $\ket{1}$ \cite{niel_chang}.
+
+$$ \ket{\psi} = \alpha  \ket{0} + \beta \ket{1}$$
+
+When we perform a measurement on such a qubit, the probability of it collapsing into the state $\ket{0}$ is given by $|\alpha|^2$, while the probability of it collapsing into the state $\ket{1}$ is $|\beta|^2$. This means that the outcome of the measuring can't be known before.
+
+The concept of teleportation or instantaneous transfer of information often falls into the realm of fantasy or science fiction. However, in quantum mechanics, the phenomenon known as quantum teleportation is a well-established technique for transmitting the information of a quantum state across a distance, as documented in various studies like \cite{quanttelep}. It's important to understand, however, that this doesn't make faster then light communication possible. The no-signaling theorem ensures that information transfer faster than light remains impossible. Therefore, despite its intriguing name, quantum teleportation doesn't represent actual teleportation but rather a fascinating quantum phenomenon.
+
+These conflicting descriptions of our reality increase the conceptual complexity of quantum mechanics and might make it a more intimidating subject to take on.
+
+
+
+\subsection{Lack of Interactive Tools}
+The current state of quantum computer simulators is still in an early state and lacks any tool accessible to beginners to the subject. This leads to a large hurdle for people wishing to learn more about quantum computers and may discourage people from pursuing this subject. Tools on the market usually implement a highly programmatic interface that might cater to people familiar to programming but often lack the visual component important for learning. Example of these are Googles qsim\cite{googleqsim} or Intel Quantum Simulator\cite{intelqsim}.
+
+There are some visual based tools out right now like IBM's Quantum Composer \cite{ibmqsim} or Quirk, an open source drag and drop quantum simulator \cite{openqsim}. However they both lack any clear explanations of the functions of quantum gates or what all values on the screen mean and can be intimidating for beginners.

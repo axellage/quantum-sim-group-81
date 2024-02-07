@@ -1,0 +1,95 @@
+\usepackage{graphicx} % Required for inserting images
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+\usepackage{fullpage}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{comment}
+
+\usepackage{amsmath,amssymb}
+\usepackage{parskip}
+\usepackage[export]{adjustbox}
+\usepackage{nicematrix}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{mathtools}
+
+%Gäller för alla \begin av den typen
+\AtBeginEnvironment{bNiceMatrix}
+{\setlength{\arraycolsep}{15pt}}
+
+\AtBeginEnvironment{bmatrix}{\Large}
+\AtBeginEnvironment{bmatrix}{\setlength{\arraycolsep}{8pt}}
+\AtBeginEnvironment{bmatrix}{\renewcommand{\arraystretch}{1.5}}
+\AtBeginEnvironment{bmatrix}{\centering}
+
+\usepackage[none]{hyphenat}
+\usepackage{caption}           
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{braket}
+
+\usepackage[T1]{fontenc}
+\usepackage{etoolbox}
+
+\usepackage[none]{hyphenat}
+
+
+
+
+% Margins
+\usepackage[top=2.5cm, left=3cm, right=3cm, bottom=4.0cm]{geometry}
+
+% custom footers and headers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{}
+\chead{}
+\rhead{}
+\cfoot{}
+\rfoot{Page \thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\usepackage{multicol}
+\usepackage{tikz}
+
+% code listing settings
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{framecolour}{rgb}{0.81,0.81,0.77}
+
+\lstdefinestyle{mystyle}{
+    aboveskip={1.0\baselineskip},
+    belowskip={1.0\baselineskip},
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color[rgb]{0.627,0.126,0.941},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    %numbers=left,
+    frame=single,
+    rulecolor=\color{framecolour},
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+    columns=fullflexible,
+    frame=single,
+}
+
+\lstset{style=mystyle}
