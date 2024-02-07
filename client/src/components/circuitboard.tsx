@@ -29,7 +29,7 @@ function Circuitboard() {
       ]);
     }
     else {
-      //TODO make this a visible error
+      alert("No more qubits can be added");
       console.log("No more qubits can be added");
     }
   };
