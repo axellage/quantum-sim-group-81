@@ -10,7 +10,7 @@
   overflow-y: auto;
 }
 
-.ket-line {
+.qubit-line {
     display: flex;
     align-items: center;
 }
