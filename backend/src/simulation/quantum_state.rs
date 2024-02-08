@@ -12,7 +12,6 @@ pub struct QuantumState {
 
 impl QuantumState {
     // Create a QuantumState from a list of bits
-    #[cfg(test)]
     pub fn new(bits: &[usize]) -> QuantumState {
         let no_of_qubits = bits.len();
 
