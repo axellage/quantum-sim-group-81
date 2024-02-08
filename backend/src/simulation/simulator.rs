@@ -1,6 +1,7 @@
 use crate::simulation::circuit_parser::build_circuit_from_data;
 use crate::simulation::quantum_gate::QuantumGate;
 use crate::simulation::quantum_state::QuantumState;
+use crate::simulation::utils::{format_to_complex_container, to_little_endian};
 use crate::Step;
 use ndarray::{arr2, Array1};
 use num::Complex;
@@ -14,16 +15,16 @@ pub fn simulate_circuit(incoming_data: Vec<Vec<String>>) -> Vec<Step> {
 
     state_list.push(Step {
         step,
-        state: state.to_little_endian().format_to_complex_container(),
+        state: format_to_complex_container(&to_little_endian(&state)),
     });
 
     for step_gate in circuit {
         step += 1;
-        state = state.apply_gate(step_gate, 0);
+        state = state.apply_gate(step_gate);
 
         state_list.push(Step {
             step,
-            state: state.to_little_endian().format_to_complex_container(),
+            state: format_to_complex_container(&to_little_endian(&state)),
         });
     }
 
@@ -39,11 +40,11 @@ mod tests {
     fn test_x_gate_on_index() {
         // X on second qubit: |00> -> |01>
         let state = QuantumState::ket_zero().kronecker(&QuantumState::ket_zero());
-        let final_state = state.apply_gate(QuantumGate::x_gate(), 1);
+        let final_state = state.apply_gate_to_qubit(QuantumGate::x_gate(), 1);
 
         let expected_state = QuantumState::ket_zero().kronecker(&QuantumState::ket_one());
 
-        assert_eq!(final_state.vec, expected_state.vec);
+        assert_eq!(final_state.col, expected_state.col);
     }
     #[test]
     fn test_cnot_gate_on_index() {
@@ -51,11 +52,11 @@ mod tests {
         let state = QuantumState::ket_zero()
             .kronecker(&QuantumState::ket_one())
             .kronecker(&QuantumState::ket_zero());
-        let final_state = state.apply_gate(QuantumGate::cnot_gate(), 1);
+        let final_state = state.apply_gate_to_qubit(QuantumGate::cnot_gate(), 1);
         let expected_state = QuantumState::ket_zero()
             .kronecker(&QuantumState::ket_one())
             .kronecker(&QuantumState::ket_one());
-        assert_eq!(final_state.vec, expected_state.vec);
+        assert_eq!(final_state.col, expected_state.col);
     }
 
     #[test]
@@ -65,8 +66,8 @@ mod tests {
 
         let state = QuantumState::ket_zero().kronecker(&QuantumState::ket_zero());
         let result = state
-            .apply_gate(QuantumGate::h_gate(), 0)
-            .apply_gate(QuantumGate::cnot_gate(), 0);
+            .apply_gate_to_qubit(QuantumGate::h_gate(), 0)
+            .apply_gate_to_qubit(QuantumGate::cnot_gate(), 0);
 
         let expected_result = arr2(&[
             [Complex::new(1.0 / 2.0_f64.sqrt(), 0.0)],
@@ -75,7 +76,7 @@ mod tests {
             [Complex::new(1.0 / 2.0_f64.sqrt(), 0.0)],
         ]);
 
-        assert_eq!(result.vec, expected_result);
+        assert_eq!(result.col, expected_result);
     }
 
     #[test]
@@ -86,9 +87,9 @@ mod tests {
             .kronecker(&QuantumState::ket_zero())
             .kronecker(&QuantumState::ket_zero());
         let result = state
-            .apply_gate(QuantumGate::h_gate(), 0)
-            .apply_gate(QuantumGate::cnot_gate(), 0)
-            .apply_gate(QuantumGate::cnot_gate(), 1);
+            .apply_gate_to_qubit(QuantumGate::h_gate(), 0)
+            .apply_gate_to_qubit(QuantumGate::cnot_gate(), 0)
+            .apply_gate_to_qubit(QuantumGate::cnot_gate(), 1);
 
         let expected_result = arr2(&[
             [Complex::new(1.0 / 2.0_f64.sqrt(), 0.0)],
@@ -101,6 +102,6 @@ mod tests {
             [Complex::new(1.0 / 2.0_f64.sqrt(), 0.0)],
         ]);
 
-        assert_eq!(result.vec, expected_result);
+        assert_eq!(result.col, expected_result);
     }
 }

@@ -63,10 +63,10 @@ mod tests {
         let mut state = QuantumState::new(2);
 
         state = state
-            .apply_gate(circuit[0].clone(), 0)
-            .apply_gate(circuit[1].clone(), 0);
+            .apply_gate_to_qubit(circuit[0].clone(), 0)
+            .apply_gate_to_qubit(circuit[1].clone(), 0);
 
-        assert_eq!(state.vec, expected_result);
+        assert_eq!(state.col, expected_result);
     }
 
     #[test]
@@ -106,10 +106,10 @@ mod tests {
 
         let mut state = QuantumState::new(3);
         state = state
-            .apply_gate(circuit[0].clone(), 0)
-            .apply_gate(circuit[1].clone(), 0)
-            .apply_gate(circuit[2].clone(), 0);
+            .apply_gate_to_qubit(circuit[0].clone(), 0)
+            .apply_gate_to_qubit(circuit[1].clone(), 0)
+            .apply_gate_to_qubit(circuit[2].clone(), 0);
 
-        assert_eq!(state.vec, expected_result);
+        assert_eq!(state.col, expected_result);
     }
 }
