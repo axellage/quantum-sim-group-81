@@ -6,6 +6,7 @@ use num::integer::Roots;
 use num::{Complex, ToPrimitive};
 use serde::{Deserialize, Serialize};
 
+// QuantumState struct
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct QuantumState {
     pub col: Array2<Complex<f64>>,
@@ -113,6 +114,7 @@ impl QuantumState {
 mod tests {
     use super::*;
 
+    // Test that a simple state is correctly initialized
     #[test]
     fn test_simple_state() {
         let state = QuantumState::new(1);
@@ -121,6 +123,7 @@ mod tests {
         assert_eq!(state.col, expected_state);
     }
 
+    // Test that a larger state is correctly initialized
     #[test]
     fn test_large_state() {
         let state = QuantumState::new(3);
@@ -138,12 +141,14 @@ mod tests {
         assert_eq!(state.col, expected_state);
     }
 
+    // Test that the size of a state is correct
     #[test]
     fn test_size() {
         let state = QuantumState::new(5);
         assert_eq!(state.size(), 5);
     }
 
+    // Test that the Kronecker product of two states is correct
     #[test]
     fn test_kronecker() {
         let state1 = QuantumState::new(1);
