@@ -2,19 +2,19 @@ use crate::simulation::circuit_parser::build_circuit_from_data;
 use crate::simulation::quantum_gate::QuantumGate;
 use crate::simulation::quantum_state::QuantumState;
 use crate::Step;
-use ndarray::{arr2, Array1, Array2};
+use ndarray::{arr2, Array1};
 use num::Complex;
 
-pub fn simulate_circuit(incoming_data: Array2<String>) -> Vec<Step> {
-    let circuit: Array1<QuantumGate> = build_circuit_from_data(&incoming_data);
-
+pub fn simulate_circuit(incoming_data: Vec<Vec<String>>) -> Vec<Step> {
     let mut state = QuantumState::new(incoming_data.len());
+    let circuit: Array1<QuantumGate> = build_circuit_from_data(incoming_data);
+
     let mut state_list: Vec<Step> = vec![];
     let mut step: usize = 0;
 
     state_list.push(Step {
         step,
-        state: state.vec.clone(),
+        state: state.to_little_endian().format_to_complex_container(),
     });
 
     for step_gate in circuit {
@@ -23,7 +23,7 @@ pub fn simulate_circuit(incoming_data: Array2<String>) -> Vec<Step> {
 
         state_list.push(Step {
             step,
-            state: state.vec.clone(),
+            state: state.to_little_endian().format_to_complex_container(),
         });
     }
 

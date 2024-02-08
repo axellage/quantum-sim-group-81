@@ -16,7 +16,13 @@ struct IncomingData {
 #[derive(Serialize, Deserialize)]
 struct Step {
     step: usize,
-    state: Array2<Complex<f64>>,
+    state: Vec<ComplexContainer>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct ComplexContainer {
+    re: f64,
+    im: f64,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -26,12 +32,7 @@ struct OutgoingData {
 
 #[post("/simulate", format = "json", data = "<incoming_data>")]
 fn simulate_circuit_handler(incoming_data: Json<IncomingData>) -> Json<OutgoingData> {
-    let data = incoming_data.into_inner().circuit_matrix;
-    let rows = data.len();
-    let cols = data[0].len();
-
-    let matrix: Array2<String> =
-        Array2::from_shape_fn((rows, cols), |(row, col)| data[row][col].clone());
+    let matrix = incoming_data.into_inner().circuit_matrix;
 
     let response = OutgoingData {
         state_list: simulation::simulator::simulate_circuit(matrix),

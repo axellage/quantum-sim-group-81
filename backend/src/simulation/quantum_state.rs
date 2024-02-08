@@ -1,5 +1,6 @@
 use crate::simulation::quantum_gate::QuantumGate;
 use crate::simulation::utils::format_complex;
+use crate::ComplexContainer;
 use ndarray::linalg::kron;
 use ndarray::{arr2, Array2};
 use num::integer::Roots;
@@ -78,6 +79,38 @@ impl QuantumState {
 
         self
     }
+
+    pub fn format_to_complex_container(&self) -> Vec<ComplexContainer> {
+        let mut container_vec = Vec::new();
+        for el in &self.vec {
+            container_vec.push(ComplexContainer {
+                re: el.re,
+                im: el.im,
+            });
+        }
+        container_vec
+    }
+
+    pub fn to_little_endian(&self) -> Self {
+        let n = (self.vec.len_of(ndarray::Axis(0)) as f64).log2() as usize; // Number of qubits
+        let mut new_vec = Array2::<Complex<f64>>::zeros((self.vec.len_of(ndarray::Axis(0)), 1));
+
+        for i in 0..self.vec.len_of(ndarray::Axis(0)) {
+            let reversed_index = reverse_bits(i, n);
+            new_vec[[reversed_index, 0]] = self.vec[[i, 0]];
+        }
+
+        QuantumState { vec: new_vec }
+    }
+}
+
+fn reverse_bits(mut x: usize, n: usize) -> usize {
+    let mut result = 0;
+    for _ in 0..n {
+        result = (result << 1) | (x & 1);
+        x >>= 1;
+    }
+    result
 }
 
 impl fmt::Display for QuantumState {
