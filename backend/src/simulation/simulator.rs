@@ -6,7 +6,7 @@ use crate::Step;
 use ndarray::Array1;
 
 pub fn simulate_circuit(incoming_data: Vec<Vec<String>>) -> Vec<Step> {
-    let mut state = QuantumState::new(incoming_data.len());
+    let mut state = QuantumState::new(&vec![0_usize; incoming_data.len()] as &[usize]);
     let circuit: Array1<QuantumGate> = build_circuit_from_data(incoming_data);
 
     let mut state_list: Vec<Step> = vec![];
@@ -39,8 +39,8 @@ mod tests {
     #[test]
     fn test_x_gate_on_index() {
         // X on second qubit: |00> -> |01>
-        let state =
-            QuantumState::new(2).apply_gate(QuantumGate::i_gate().kronecker(QuantumGate::x_gate()));
+        let state = QuantumState::new(&[0, 0])
+            .apply_gate(QuantumGate::i_gate().kronecker(QuantumGate::x_gate()));
 
         let expected_state = arr2(&[
             [Complex::new(0.0, 0.0)],
@@ -54,20 +54,10 @@ mod tests {
     #[test]
     fn test_cnot_gate_on_index() {
         // CNOT with control on 2nd qubit of |010> -> |011>
-        let state = QuantumState::new(3)
-            .apply_gate(
-                QuantumGate::i_gate()
-                    .kronecker(QuantumGate::x_gate())
-                    .kronecker(QuantumGate::i_gate()),
-            )
+        let state = QuantumState::new(&[0, 1, 0])
             .apply_gate(QuantumGate::i_gate().kronecker(QuantumGate::cnot_gate()));
 
-        let expected_state = QuantumState::new(3).apply_gate(
-            QuantumGate::i_gate()
-                .kronecker(QuantumGate::x_gate())
-                .kronecker(QuantumGate::x_gate()),
-        );
-
+        let expected_state = QuantumState::new(&[0, 1, 1]);
         assert_eq!(state.col, expected_state.col);
     }
 
@@ -76,7 +66,7 @@ mod tests {
         // Apply H gate to |0> to create superposition (|0> + |1>) / sqrt(2), then apply CNOT gate with first qubit as control
         // This results in the entangled state (|00> + |11>) / sqrt(2)
 
-        let state = QuantumState::new(2);
+        let state = QuantumState::new(&[0, 0]);
         let result = state
             .apply_gate(QuantumGate::h_gate().kronecker(QuantumGate::i_gate()))
             .apply_gate(QuantumGate::cnot_gate());
@@ -95,7 +85,7 @@ mod tests {
     fn test_ghz_state_circuit() {
         // Create GHZ state: Apply H to first qubit and CNOT with first qubit as control to the other two
         // Results in state (|000> + |111>) / sqrt(2)
-        let state = QuantumState::new(3);
+        let state = QuantumState::new(&[0, 0, 0]);
         let result = state
             .apply_gate(
                 QuantumGate::h_gate()
