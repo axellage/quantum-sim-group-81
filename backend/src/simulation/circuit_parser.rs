@@ -5,20 +5,29 @@ use num::Complex;
 pub fn build_circuit_from_data(grid: Vec<Vec<String>>) -> Array1<QuantumGate> {
     let mut return_list: Vec<QuantumGate> = Vec::new();
 
-    for step in 0..grid.len() {
-        let mut step_gate = parse_gate(&grid[0][step]);
+    for step in 0..grid[0].len() {
+        let mut combined_gate: Option<QuantumGate> = None;
 
-        for qubit in 1..grid[step].len() {
-            step_gate = step_gate.kronecker(parse_gate(&grid[qubit][step]));
+        for qubit in 0..grid.len() {
+            let gate = parse_gate(&grid[qubit][step]);
+
+            // If there is already a gate for this qubit, combine it with the new gate
+            combined_gate = Some(match combined_gate {
+                Some(existing_gate) => existing_gate.kronecker(gate),
+                None => gate,
+            });
         }
 
-        return_list.push(step_gate);
+        if let Some(gate) = combined_gate {
+            return_list.push(gate);
+        }
     }
 
     Array1::from(return_list)
 }
 
 fn parse_gate(gate_string: &String) -> QuantumGate {
+    // Multi qubit gates are only applied once, so we can ignore the subsequent parts
     match gate_string.as_str() {
         "I" => QuantumGate::i_gate(),
         "H" => QuantumGate::h_gate(),
@@ -28,13 +37,14 @@ fn parse_gate(gate_string: &String) -> QuantumGate {
         "T" => QuantumGate::t_gate(),
         "S" => QuantumGate::s_gate(),
         "CZ" => QuantumGate::cz_gate(),
-        "SWAP" => QuantumGate::swap_gate(),
+        "SWAP-1" => QuantumGate::swap_gate(),
         "CCNOT-1" => QuantumGate::ccnot_gate(),
         "CNOT-1" => QuantumGate::cnot_gate(),
-        _ => QuantumGate {
+        "CNOT-2" | "CCNOT-2" | "CCNOT-3" | "SWAP-2" => QuantumGate {
             matrix: arr2(&[[Complex::new(1.0_f64, 0.0_f64)]]),
             size: 0,
         },
+        _ => panic!("Invalid gate"),
     }
 }
 
@@ -43,6 +53,40 @@ mod tests {
     use super::*;
     use crate::simulation::quantum_state::QuantumState;
     use ndarray::Array2;
+
+    #[test]
+    fn x_gate_circuit_test() {
+        let q0 = vec![String::from("X")];
+        let grid = vec![q0];
+
+        let circuit = build_circuit_from_data(grid);
+
+        let state = QuantumState::new(&[0]).apply_gate(circuit[0].clone());
+
+        let expected_result: Array2<Complex<f64>> =
+            arr2(&[[Complex::new(0.0, 0.0)], [Complex::new(1.0, 0.0)]]);
+
+        assert_eq!(state.col, expected_result);
+    }
+
+    #[test]
+    fn one_qubit_multiple_gates_test() {
+        let q0 = vec![String::from("X"), String::from("H")];
+        let grid = vec![q0];
+
+        let circuit = build_circuit_from_data(grid);
+
+        let state = QuantumState::new(&[0])
+            .apply_gate(circuit[0].clone())
+            .apply_gate(circuit[1].clone());
+
+        let expected_result: Array2<Complex<f64>> = arr2(&[
+            [Complex::new(1.0 / 2.0_f64.sqrt(), 0.0)],
+            [Complex::new(-1.0 / 2.0_f64.sqrt(), 0.0)],
+        ]);
+
+        assert_eq!(state.col, expected_result);
+    }
 
     #[test]
     fn bell_state_circuit_test() {
