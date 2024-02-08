@@ -53,16 +53,16 @@ mod tests {
 
         let circuit = build_circuit_from_data(grid);
 
+        let state = QuantumState::new(&[0, 0])
+            .apply_gate(circuit[0].clone())
+            .apply_gate(circuit[1].clone());
+
         let expected_result: Array2<Complex<f64>> = arr2(&[
             [Complex::new(1.0_f64 / 2.0_f64.sqrt(), 0.0_f64)],
             [Complex::new(0.0_f64, 0.0_f64)],
             [Complex::new(0.0_f64, 0.0_f64)],
             [Complex::new(1.0_f64 / 2.0_f64.sqrt(), 0.0_f64)],
         ]);
-
-        let state = QuantumState::new(2)
-            .apply_gate(circuit[0].clone())
-            .apply_gate(circuit[1].clone());
 
         assert_eq!(state.col, expected_result);
     }
@@ -102,7 +102,7 @@ mod tests {
             [Complex::new(1.0_f64 / 2.0_f64.sqrt(), 0.0_f64)],
         ]);
 
-        let mut state = QuantumState::new(3);
+        let mut state = QuantumState::new(&[0, 0, 0]);
         state = state
             .apply_gate(circuit[0].clone())
             .apply_gate(circuit[1].clone())

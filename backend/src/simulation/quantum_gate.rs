@@ -290,14 +290,12 @@ mod tests {
     #[test]
     fn test_x_gate() {
         // X|0> -> |1>
-        // X X |0> -> |0>
-        let state = QuantumState::new(1).apply_gate(QuantumGate::x_gate());
+        // X |1> -> |0>
+        let state = QuantumState::new(&[0]).apply_gate(QuantumGate::x_gate());
         let final_state = arr2(&[[Complex::new(0.0, 0.0)], [Complex::new(1.0, 0.0)]]);
         assert_eq!(state.col, final_state);
 
-        let state = QuantumState::new(1)
-            .apply_gate(QuantumGate::x_gate())
-            .apply_gate(QuantumGate::x_gate());
+        let state = QuantumState::new(&[1]).apply_gate(QuantumGate::x_gate());
         let final_state = arr2(&[[Complex::new(1.0, 0.0)], [Complex::new(0.0, 0.0)]]);
         assert_eq!(state.col, final_state);
     }
@@ -305,14 +303,12 @@ mod tests {
     #[test]
     fn test_i_gate() {
         // I|0> -> |0>
-        // I X |0> -> |1>
-        let state = QuantumState::new(1).apply_gate(QuantumGate::i_gate());
+        // I|1> -> |1>
+        let state = QuantumState::new(&[0]).apply_gate(QuantumGate::i_gate());
         let final_state = arr2(&[[Complex::new(1.0, 0.0)], [Complex::new(0.0, 0.0)]]);
         assert_eq!(state.col, final_state);
 
-        let state = QuantumState::new(1)
-            .apply_gate(QuantumGate::x_gate())
-            .apply_gate(QuantumGate::i_gate());
+        let state = QuantumState::new(&[1]).apply_gate(QuantumGate::i_gate());
         let final_state = arr2(&[[Complex::new(0.0, 0.0)], [Complex::new(1.0, 0.0)]]);
         assert_eq!(state.col, final_state);
     }
@@ -320,14 +316,12 @@ mod tests {
     #[test]
     fn test_y_gate() {
         // Y|0> -> i|1>
-        // Y X |0> -> -i|0>
-        let state = QuantumState::new(1).apply_gate(QuantumGate::y_gate());
+        // Y|1> -> -i|0>
+        let state = QuantumState::new(&[0]).apply_gate(QuantumGate::y_gate());
         let final_state = arr2(&[[Complex::new(0.0, 0.0)], [Complex::new(0.0, 1.0)]]);
         assert_eq!(state.col, final_state);
 
-        let state = QuantumState::new(1)
-            .apply_gate(QuantumGate::x_gate())
-            .apply_gate(QuantumGate::y_gate());
+        let state = QuantumState::new(&[1]).apply_gate(QuantumGate::y_gate());
         let final_state = arr2(&[[Complex::new(0.0, -1.0)], [Complex::new(0.0, 0.0)]]);
         assert_eq!(state.col, final_state);
     }
@@ -335,14 +329,12 @@ mod tests {
     #[test]
     fn test_z_gate() {
         // Z|0> -> |0>
-        // Z X |0> -> -|1>
-        let state = QuantumState::new(1).apply_gate(QuantumGate::z_gate());
+        // Z|1> -> -|1>
+        let state = QuantumState::new(&[0]).apply_gate(QuantumGate::z_gate());
         let final_state = arr2(&[[Complex::new(1.0, 0.0)], [Complex::new(0.0, 0.0)]]);
         assert_eq!(state.col, final_state);
 
-        let state = QuantumState::new(1)
-            .apply_gate(QuantumGate::x_gate())
-            .apply_gate(QuantumGate::z_gate());
+        let state = QuantumState::new(&[1]).apply_gate(QuantumGate::z_gate());
         let final_state = arr2(&[[Complex::new(0.0, 0.0)], [Complex::new(-1.0, 0.0)]]);
         assert_eq!(state.col, final_state);
     }
@@ -350,17 +342,15 @@ mod tests {
     #[test]
     fn test_h_gate() {
         // H|0> -> (|0> + |1>) / √2
-        // H X |0> -> (|0> - |1>) / √2
-        let state = QuantumState::new(1).apply_gate(QuantumGate::h_gate());
+        // H|1> -> (|0> - |1>) / √2
+        let state = QuantumState::new(&[0]).apply_gate(QuantumGate::h_gate());
         let final_state = arr2(&[
             [Complex::new(1.0 / 2.0_f64.sqrt(), 0.0)],
             [Complex::new(1.0 / 2.0_f64.sqrt(), 0.0)],
         ]);
         assert_eq!(state.col, final_state);
 
-        let state = QuantumState::new(1)
-            .apply_gate(QuantumGate::x_gate())
-            .apply_gate(QuantumGate::h_gate());
+        let state = QuantumState::new(&[1]).apply_gate(QuantumGate::h_gate());
         let final_state = arr2(&[
             [Complex::new(1.0 / 2.0_f64.sqrt(), 0.0)],
             [Complex::new(-1.0 / 2.0_f64.sqrt(), 0.0)],
@@ -374,7 +364,7 @@ mod tests {
         // CNOT|01> -> |01>
         // CNOT|10> -> |11>
         // CNOT|11> -> |10>
-        let state = QuantumState::new(2).apply_gate(QuantumGate::cnot_gate());
+        let state = QuantumState::new(&[0, 0]).apply_gate(QuantumGate::cnot_gate());
 
         let expected_result = arr2(&[
             [Complex::new(1.0, 0.0)],
@@ -384,9 +374,7 @@ mod tests {
         ]);
         assert_eq!(state.col, expected_result);
 
-        let state = QuantumState::new(2)
-            .apply_gate(QuantumGate::i_gate().kronecker(QuantumGate::x_gate()))
-            .apply_gate(QuantumGate::cnot_gate());
+        let state = QuantumState::new(&[0, 1]).apply_gate(QuantumGate::cnot_gate());
 
         let expected_result = arr2(&[
             [Complex::new(0.0, 0.0)],
@@ -396,9 +384,7 @@ mod tests {
         ]);
         assert_eq!(state.col, expected_result);
 
-        let state = QuantumState::new(2)
-            .apply_gate(QuantumGate::x_gate().kronecker(QuantumGate::i_gate()))
-            .apply_gate(QuantumGate::cnot_gate());
+        let state = QuantumState::new(&[1, 0]).apply_gate(QuantumGate::cnot_gate());
 
         let expected_result = arr2(&[
             [Complex::new(0.0, 0.0)],
@@ -409,9 +395,7 @@ mod tests {
 
         assert_eq!(state.col, expected_result);
 
-        let state = QuantumState::new(2)
-            .apply_gate(QuantumGate::x_gate().kronecker(QuantumGate::x_gate()))
-            .apply_gate(QuantumGate::cnot_gate());
+        let state = QuantumState::new(&[1, 1]).apply_gate(QuantumGate::cnot_gate());
 
         let expected_result = arr2(&[
             [Complex::new(0.0, 0.0)],
@@ -426,9 +410,7 @@ mod tests {
     #[test]
     fn test_swap_gate() {
         // Swap state of two qubits: |01> should become |10>
-        let state = QuantumState::new(2)
-            .apply_gate(QuantumGate::i_gate().kronecker(QuantumGate::x_gate()))
-            .apply_gate(QuantumGate::swap_gate());
+        let state = QuantumState::new(&[0, 1]).apply_gate(QuantumGate::swap_gate());
 
         let expected_result = arr2(&[
             [Complex::new(0.0, 0.0)],
@@ -443,13 +425,7 @@ mod tests {
     #[test]
     fn test_toffoli_gate() {
         // Apply Toffoli gate (CCNOT): |110> should become |111>
-        let state = QuantumState::new(3)
-            .apply_gate(
-                QuantumGate::x_gate()
-                    .kronecker(QuantumGate::x_gate())
-                    .kronecker(QuantumGate::i_gate()),
-            )
-            .apply_gate(QuantumGate::ccnot_gate());
+        let state = QuantumState::new(&[1, 1, 0]).apply_gate(QuantumGate::ccnot_gate());
 
         let expected_result = arr2(&[
             [Complex::new(0.0, 0.0)],
