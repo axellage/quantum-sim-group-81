@@ -9,7 +9,7 @@ pub fn build_circuit_from_data(grid: Vec<Vec<String>>) -> Array1<QuantumGate> {
         let mut step_gate = parse_gate(&grid[0][step]);
 
         for qubit in 1..grid[step].len() {
-            step_gate = step_gate.kronecker(&parse_gate(&grid[qubit][step]));
+            step_gate = step_gate.kronecker(parse_gate(&grid[qubit][step]));
         }
 
         return_list.push(step_gate);
@@ -23,10 +23,17 @@ fn parse_gate(gate_string: &String) -> QuantumGate {
         "I" => QuantumGate::i_gate(),
         "H" => QuantumGate::h_gate(),
         "X" => QuantumGate::x_gate(),
+        "Y" => QuantumGate::y_gate(),
+        "Z" => QuantumGate::z_gate(),
+        "T" => QuantumGate::t_gate(),
+        "S" => QuantumGate::s_gate(),
+        "CZ" => QuantumGate::cz_gate(),
+        "SWAP" => QuantumGate::swap_gate(),
+        "CCNOT-1" => QuantumGate::ccnot_gate(),
         "CNOT-1" => QuantumGate::cnot_gate(),
         _ => QuantumGate {
             matrix: arr2(&[[Complex::new(1.0_f64, 0.0_f64)]]),
-            size: 1,
+            size: 0,
         },
     }
 }
@@ -38,18 +45,11 @@ mod tests {
     use ndarray::Array2;
 
     #[test]
-    fn entagled_state_circuit_test() {
-        let mut q0 = Vec::new();
-        q0.push("H".to_string());
-        q0.push("CNOT-1".to_string());
+    fn bell_state_circuit_test() {
+        let q0 = vec![String::from("H"), String::from("CNOT-1")];
+        let q1 = vec![String::from("I"), String::from("CNOT-2")];
 
-        let mut q1 = Vec::new();
-        q1.push("I".to_string());
-        q1.push("CNOT-2".to_string());
-
-        let mut grid = Vec::new();
-        grid.push(q0);
-        grid.push(q1);
+        let grid = vec![q0, q1];
 
         let circuit = build_circuit_from_data(grid);
 
@@ -60,11 +60,9 @@ mod tests {
             [Complex::new(1.0_f64 / 2.0_f64.sqrt(), 0.0_f64)],
         ]);
 
-        let mut state = QuantumState::new(2);
-
-        state = state
-            .apply_gate_to_qubit(circuit[0].clone(), 0)
-            .apply_gate_to_qubit(circuit[1].clone(), 0);
+        let state = QuantumState::new(2)
+            .apply_gate(circuit[0].clone())
+            .apply_gate(circuit[1].clone());
 
         assert_eq!(state.col, expected_result);
     }
@@ -106,9 +104,9 @@ mod tests {
 
         let mut state = QuantumState::new(3);
         state = state
-            .apply_gate_to_qubit(circuit[0].clone(), 0)
-            .apply_gate_to_qubit(circuit[1].clone(), 0)
-            .apply_gate_to_qubit(circuit[2].clone(), 0);
+            .apply_gate(circuit[0].clone())
+            .apply_gate(circuit[1].clone())
+            .apply_gate(circuit[2].clone());
 
         assert_eq!(state.col, expected_result);
     }

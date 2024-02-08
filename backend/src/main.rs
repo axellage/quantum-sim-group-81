@@ -3,8 +3,6 @@ mod simulation;
 #[macro_use]
 extern crate rocket;
 
-use ndarray::Array2;
-use num::Complex;
 use rocket::serde::json::Json;
 use serde::{Deserialize, Serialize};
 

@@ -3,8 +3,7 @@ use crate::simulation::quantum_gate::QuantumGate;
 use crate::simulation::quantum_state::QuantumState;
 use crate::simulation::utils::{format_to_complex_container, to_little_endian};
 use crate::Step;
-use ndarray::{arr2, Array1};
-use num::Complex;
+use ndarray::Array1;
 
 pub fn simulate_circuit(incoming_data: Vec<Vec<String>>) -> Vec<Step> {
     let mut state = QuantumState::new(incoming_data.len());
@@ -33,30 +32,43 @@ pub fn simulate_circuit(incoming_data: Vec<Vec<String>>) -> Vec<Step> {
 
 #[cfg(test)]
 mod tests {
-
     use super::*;
+    use ndarray::arr2;
+    use num::Complex;
 
     #[test]
     fn test_x_gate_on_index() {
         // X on second qubit: |00> -> |01>
-        let state = QuantumState::ket_zero().kronecker(&QuantumState::ket_zero());
-        let final_state = state.apply_gate_to_qubit(QuantumGate::x_gate(), 1);
+        let state =
+            QuantumState::new(2).apply_gate(QuantumGate::i_gate().kronecker(QuantumGate::x_gate()));
 
-        let expected_state = QuantumState::ket_zero().kronecker(&QuantumState::ket_one());
+        let expected_state = arr2(&[
+            [Complex::new(0.0, 0.0)],
+            [Complex::new(1.0, 0.0)],
+            [Complex::new(0.0, 0.0)],
+            [Complex::new(0.0, 0.0)],
+        ]);
 
-        assert_eq!(final_state.col, expected_state.col);
+        assert_eq!(state.col, expected_state);
     }
     #[test]
     fn test_cnot_gate_on_index() {
         // CNOT with control on 2nd qubit of |010> -> |011>
-        let state = QuantumState::ket_zero()
-            .kronecker(&QuantumState::ket_one())
-            .kronecker(&QuantumState::ket_zero());
-        let final_state = state.apply_gate_to_qubit(QuantumGate::cnot_gate(), 1);
-        let expected_state = QuantumState::ket_zero()
-            .kronecker(&QuantumState::ket_one())
-            .kronecker(&QuantumState::ket_one());
-        assert_eq!(final_state.col, expected_state.col);
+        let state = QuantumState::new(3)
+            .apply_gate(
+                QuantumGate::i_gate()
+                    .kronecker(QuantumGate::x_gate())
+                    .kronecker(QuantumGate::i_gate()),
+            )
+            .apply_gate(QuantumGate::i_gate().kronecker(QuantumGate::cnot_gate()));
+
+        let expected_state = QuantumState::new(3).apply_gate(
+            QuantumGate::i_gate()
+                .kronecker(QuantumGate::x_gate())
+                .kronecker(QuantumGate::x_gate()),
+        );
+
+        assert_eq!(state.col, expected_state.col);
     }
 
     #[test]
@@ -64,10 +76,10 @@ mod tests {
         // Apply H gate to |0> to create superposition (|0> + |1>) / sqrt(2), then apply CNOT gate with first qubit as control
         // This results in the entangled state (|00> + |11>) / sqrt(2)
 
-        let state = QuantumState::ket_zero().kronecker(&QuantumState::ket_zero());
+        let state = QuantumState::new(2);
         let result = state
-            .apply_gate_to_qubit(QuantumGate::h_gate(), 0)
-            .apply_gate_to_qubit(QuantumGate::cnot_gate(), 0);
+            .apply_gate(QuantumGate::h_gate().kronecker(QuantumGate::i_gate()))
+            .apply_gate(QuantumGate::cnot_gate());
 
         let expected_result = arr2(&[
             [Complex::new(1.0 / 2.0_f64.sqrt(), 0.0)],
@@ -83,13 +95,15 @@ mod tests {
     fn test_ghz_state_circuit() {
         // Create GHZ state: Apply H to first qubit and CNOT with first qubit as control to the other two
         // Results in state (|000> + |111>) / sqrt(2)
-        let state = QuantumState::ket_zero()
-            .kronecker(&QuantumState::ket_zero())
-            .kronecker(&QuantumState::ket_zero());
+        let state = QuantumState::new(3);
         let result = state
-            .apply_gate_to_qubit(QuantumGate::h_gate(), 0)
-            .apply_gate_to_qubit(QuantumGate::cnot_gate(), 0)
-            .apply_gate_to_qubit(QuantumGate::cnot_gate(), 1);
+            .apply_gate(
+                QuantumGate::h_gate()
+                    .kronecker(QuantumGate::i_gate())
+                    .kronecker(QuantumGate::i_gate()),
+            )
+            .apply_gate(QuantumGate::cnot_gate().kronecker(QuantumGate::i_gate()))
+            .apply_gate(QuantumGate::i_gate().kronecker(QuantumGate::cnot_gate()));
 
         let expected_result = arr2(&[
             [Complex::new(1.0 / 2.0_f64.sqrt(), 0.0)],
