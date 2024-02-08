@@ -2,14 +2,14 @@ use crate::simulation::quantum_gate::QuantumGate;
 use ndarray::{arr2, Array1};
 use num::Complex;
 
-pub fn build_circuit_from_data(grid: Vec<Vec<String>>) -> Array1<QuantumGate> {
+pub fn build_circuit_from_data(grid: Vec<Vec<&str>>) -> Array1<QuantumGate> {
     let mut return_list: Vec<QuantumGate> = Vec::new();
 
     for step in 0..grid[0].len() {
         let mut combined_gate: Option<QuantumGate> = None;
 
-        for qubit in 0..grid.len() {
-            let gate = parse_gate(&grid[qubit][step]);
+        for qubit in &grid {
+            let gate = parse_gate(qubit[step]);
 
             // If there is already a gate for this qubit, combine it with the new gate
             combined_gate = Some(match combined_gate {
@@ -26,9 +26,9 @@ pub fn build_circuit_from_data(grid: Vec<Vec<String>>) -> Array1<QuantumGate> {
     Array1::from(return_list)
 }
 
-fn parse_gate(gate_string: &String) -> QuantumGate {
+fn parse_gate(gate_string: &str) -> QuantumGate {
     // Multi qubit gates are only applied once, so we can ignore the subsequent parts
-    match gate_string.as_str() {
+    match gate_string {
         "I" => QuantumGate::i_gate(),
         "H" => QuantumGate::h_gate(),
         "X" => QuantumGate::x_gate(),
@@ -56,7 +56,7 @@ mod tests {
 
     #[test]
     fn x_gate_circuit_test() {
-        let q0 = vec![String::from("X")];
+        let q0 = vec!["X"];
         let grid = vec![q0];
 
         let circuit = build_circuit_from_data(grid);
@@ -71,7 +71,7 @@ mod tests {
 
     #[test]
     fn one_qubit_multiple_gates_test() {
-        let q0 = vec![String::from("X"), String::from("H")];
+        let q0 = vec!["X", "H"];
         let grid = vec![q0];
 
         let circuit = build_circuit_from_data(grid);
@@ -90,8 +90,8 @@ mod tests {
 
     #[test]
     fn bell_state_circuit_test() {
-        let q0 = vec![String::from("H"), String::from("CNOT-1")];
-        let q1 = vec![String::from("I"), String::from("CNOT-2")];
+        let q0 = vec!["H", "CNOT-1"];
+        let q1 = vec!["I", "CNOT-2"];
 
         let grid = vec![q0, q1];
 
@@ -114,19 +114,19 @@ mod tests {
     #[test]
     fn ghz_state_circuit_test() {
         let mut q0 = Vec::new();
-        q0.push("H".to_string());
-        q0.push("CNOT-1".to_string());
-        q0.push("I".to_string());
+        q0.push("H");
+        q0.push("CNOT-1");
+        q0.push("I");
 
         let mut q1 = Vec::new();
-        q1.push("I".to_string());
-        q1.push("CNOT-2".to_string());
-        q1.push("CNOT-1".to_string());
+        q1.push("I");
+        q1.push("CNOT-2");
+        q1.push("CNOT-1");
 
         let mut q2 = Vec::new();
-        q2.push("I".to_string());
-        q2.push("I".to_string());
-        q2.push("CNOT-2".to_string());
+        q2.push("I");
+        q2.push("I");
+        q2.push("CNOT-2");
 
         let mut grid = Vec::new();
         grid.push(q0);
