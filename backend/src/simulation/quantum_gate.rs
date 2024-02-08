@@ -1,4 +1,5 @@
 use crate::simulation::quantum_state::QuantumState;
+use ndarray::linalg::kron;
 use ndarray::{arr2, Array2};
 use num::Complex;
 
@@ -185,6 +186,13 @@ impl QuantumGate {
                 ],
             ]),
             size: 4,
+        }
+    }
+
+    pub fn kronecker(&self, other: &QuantumGate) -> QuantumGate {
+        QuantumGate {
+            matrix: kron(&self.matrix, &other.matrix),
+            size: self.size * other.size,
         }
     }
 }
