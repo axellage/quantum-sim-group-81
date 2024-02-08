@@ -15,7 +15,7 @@ impl QuantumState {
     pub fn new(bits: &[usize]) -> QuantumState {
         let no_of_qubits = bits.len();
 
-        if no_of_qubits < 1 || no_of_qubits > 6 {
+        if !(1..=6).contains(&no_of_qubits) {
             panic!("Number of qubits must be between 1 and 6, inclusive");
         }
 

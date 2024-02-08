@@ -5,24 +5,22 @@ use crate::simulation::utils::{format_to_complex_container, to_little_endian};
 use crate::Step;
 use ndarray::Array1;
 
-pub fn simulate_circuit(incoming_data: Vec<Vec<String>>) -> Vec<Step> {
+pub fn simulate_circuit(incoming_data: Vec<Vec<&str>>) -> Vec<Step> {
     let mut state = QuantumState::new(&vec![0_usize; incoming_data.len()] as &[usize]);
     let circuit: Array1<QuantumGate> = build_circuit_from_data(incoming_data);
 
     let mut state_list: Vec<Step> = vec![];
-    let mut step: usize = 0;
 
     state_list.push(Step {
-        step,
+        step: 0,
         state: format_to_complex_container(&to_little_endian(&state)),
     });
 
-    for step_gate in circuit {
-        step += 1;
+    for (step, step_gate) in circuit.into_iter().enumerate() {
         state = state.apply_gate(step_gate);
 
         state_list.push(Step {
-            step,
+            step: step + 1,
             state: format_to_complex_container(&to_little_endian(&state)),
         });
     }

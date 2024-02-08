@@ -30,7 +30,13 @@ struct OutgoingData {
 
 #[post("/simulate", format = "json", data = "<incoming_data>")]
 fn simulate_circuit_handler(incoming_data: Json<IncomingData>) -> Json<OutgoingData> {
-    let matrix = incoming_data.into_inner().circuit_matrix;
+    let binding = incoming_data.into_inner();
+
+    let matrix = binding
+        .circuit_matrix
+        .iter()
+        .map(|row| row.iter().map(|item| item.as_str()).collect())
+        .collect();
 
     let response = OutgoingData {
         state_list: simulation::simulator::simulate_circuit(matrix),
@@ -40,13 +46,11 @@ fn simulate_circuit_handler(incoming_data: Json<IncomingData>) -> Json<OutgoingD
 }
 
 #[derive(Serialize, Deserialize)]
-
 struct PingMessage {
     message: String,
 }
 
 #[derive(Serialize, Deserialize)]
-
 struct PingResponse {
     message: String,
 }
@@ -55,7 +59,7 @@ struct PingResponse {
 fn ping_handler(ping_message: Json<PingMessage>) -> Json<PingResponse> {
     let data: PingMessage = ping_message.into_inner();
 
-    return if data.message == "ping" {
+    if data.message == "ping" {
         Json(PingResponse {
             message: "pong".parse().unwrap(),
         })
@@ -63,7 +67,7 @@ fn ping_handler(ping_message: Json<PingMessage>) -> Json<PingResponse> {
         Json(PingResponse {
             message: "Huh?".parse().unwrap(),
         })
-    };
+    }
 }
 
 #[launch]
