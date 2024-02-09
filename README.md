@@ -55,7 +55,7 @@ The circuit_matrix is a 2-dimensional list of strings, where each row represents
 | -----------  | ------------ | ------------ |
 | Pauli-X      | X        |         |
 | Identity gate or wire| I         |         |
-| Hadamard gate | H        | Title        |
+| Hadamard gate | H        |         |
 | CNOT gate    | CNOT-1 & CNOT-2         | CNOT-1 is control and CNOT-2 is target*        |
 | SWAP gate       | SWAP-1 & SWAP-2        |         |
 | Toffoli gate    | CCNOT-1 & CCNOT-2 & CCNOT-3         | CCNOT-1 and CCNOT-2 is control and CCNOT-3 is target* |
@@ -101,5 +101,5 @@ Response:
 In this example, the first qubits goes through a Hadamard gate and then used as control bit in a CNOT operation where the second qubit is the target. This results is in a equal superposition between the states |00> and |11>.
 ## Authors
 Axel Bergman, Chiara Cesarini, Lucas Möller and Alexander Persson
-## Licence
+## License
 
