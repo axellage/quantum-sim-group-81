@@ -1,5 +1,6 @@
 import React, { useState, ReactNode, useEffect } from 'react';
 import './circuitboard.css';
+import axios from 'axios';
 
 function Circuitboard() {
   const [qubitLines, setQubitLines] = useState<ReactNode[]>([]);
@@ -44,6 +45,19 @@ function Circuitboard() {
     }
   };
 
+  //const axios = require('axios');
+
+  async function ping() {
+    const response = await axios.post('http://localhost:8000/ping', {
+          message: "ping"
+
+  })
+  .then(function(response: any){
+    console.log(response);
+  })
+  
+  }
+
   return (
     <div className="Circuitboard">
       <section className="circuit">
@@ -51,6 +65,7 @@ function Circuitboard() {
       </section>
       <button onClick={addQubit}>+</button>
       <button onClick={removeQubit}>-</button>
+      <button onClick={ping}>ping</button>
     </div>
   );
 }

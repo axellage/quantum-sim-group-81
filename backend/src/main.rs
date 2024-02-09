@@ -1,5 +1,8 @@
 mod simulation;
 
+use rocket::http::Method;
+use rocket_cors::{AllowedOrigins, CorsOptions};
+
 #[macro_use]
 extern crate rocket;
 
@@ -72,5 +75,15 @@ fn ping_handler(ping_message: Json<PingMessage>) -> Json<PingResponse> {
 
 #[launch]
 fn rocket() -> _ {
-    rocket::build().mount("/", routes![simulate_circuit_handler, ping_handler])
+    let cors = CorsOptions::default()
+    .allowed_origins(AllowedOrigins::all())
+    .allowed_methods(
+        vec![Method::Get, Method::Post, Method::Patch]
+            .into_iter()
+            .map(From::from)
+            .collect(),
+    )
+    .allow_credentials(true);
+
+    rocket::build().attach(cors.to_cors().unwrap()).mount("/", routes![simulate_circuit_handler, ping_handler])
 }
