@@ -1,0 +1,21 @@
+.gate-object{
+    color: white;
+    font-size: x-large;
+    border: 2px solid white;
+    text-align: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: 0.75rem;
+}
+
+.gates {
+    width: 5%;
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+.gate-container {
+    color: white;
+    padding: 1rem;
+    padding-left: 3rem;
+}
