@@ -1,20 +1,33 @@
-import React from "react";
+import React, {useState} from "react";
 import './toolbar.css';
+import {Gate} from './gate';
+import {DndContext} from '@dnd-kit/core';
 
 function Toolbar() {
+    const [parent, setParent] = useState(null);
     return (
       <div className="toolbar">
         <section className="gate-container">
-            <h1>Gates</h1>
-            <div className="gates">
-                <div className="gate-object">X</div>
-                <div className="gate-object">Y</div>
-                <div className="gate-object">Z</div>
-                <div className="gate-object">H</div>
-            </div>
+          <DndContext onDragEnd={handleDragEnd}>
+            <Gate name="X"/>
+          </DndContext>
+          <DndContext onDragEnd={handleDragEnd}>
+            <Gate name="Y"/>
+          </DndContext>
+          <DndContext onDragEnd={handleDragEnd}>
+            <Gate name="Z"/>
+          </DndContext>
+          <DndContext onDragEnd={handleDragEnd}>
+            <Gate name="H"/>
+          </DndContext>
         </section>
       </div>
     );
+
+    function handleDragEnd({over}:any) {
+      setParent(over ? over.id : null);
+    }
   }
+
   
   export default Toolbar;
