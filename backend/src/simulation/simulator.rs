@@ -35,6 +35,18 @@ mod tests {
     use num::Complex;
 
     #[test]
+    fn test_single_operation() {
+        let state = QuantumState::new(&[0]).apply_gate(QuantumGate::h_gate());
+
+        let expected_state = arr2(&[
+            [Complex::new(1.0 / 2.0_f64.sqrt(), 0.0)],
+            [Complex::new(1.0 / 2.0_f64.sqrt(), 0.0)],
+        ]);
+
+        assert_eq!(state.col, expected_state);
+    }
+
+    #[test]
     fn test_x_gate_on_index() {
         // X on second qubit: |00> -> |01>
         let state = QuantumState::new(&[0, 0])
