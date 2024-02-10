@@ -76,14 +76,69 @@ fn ping_handler(ping_message: Json<PingMessage>) -> Json<PingResponse> {
 #[launch]
 fn rocket() -> _ {
     let cors = CorsOptions::default()
-    .allowed_origins(AllowedOrigins::all())
-    .allowed_methods(
-        vec![Method::Get, Method::Post, Method::Patch]
-            .into_iter()
-            .map(From::from)
-            .collect(),
-    )
-    .allow_credentials(true);
+        .allowed_origins(AllowedOrigins::all())
+        .allowed_methods(
+            vec![Method::Get, Method::Post, Method::Patch]
+                .into_iter()
+                .map(From::from)
+                .collect(),
+        )
+        .allow_credentials(true);
 
-    rocket::build().attach(cors.to_cors().unwrap()).mount("/", routes![simulate_circuit_handler, ping_handler])
+    rocket::build()
+        .attach(cors.to_cors().unwrap())
+        .mount("/", routes![simulate_circuit_handler, ping_handler])
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use rocket::http::Status;
+    use rocket::local::blocking::Client;
+
+    #[test]
+    fn test_simulate_circuit_1() {
+        let client = Client::tracked(rocket()).expect("valid rocket instance");
+
+        let response = client
+            .post("/simulate")
+            .header(rocket::http::ContentType::JSON)
+            .body(
+                r#"{
+                    "circuit_matrix": [
+                        ["H", "I"],
+                        ["I", "H"]
+                    ]
+                }"#,
+            )
+            .dispatch();
+
+        let expected_response = r#"{"state_list":[{"step":0,"state":[{"re":1.0,"im":0.0},{"re":0.0,"im":0.0},{"re":0.0,"im":0.0},{"re":0.0,"im":0.0}]},{"step":1,"state":[{"re":0.7071067811865475,"im":0.0},{"re":0.7071067811865475,"im":0.0},{"re":0.0,"im":0.0},{"re":0.0,"im":0.0}]},{"step":2,"state":[{"re":0.4999999999999999,"im":0.0},{"re":0.4999999999999999,"im":0.0},{"re":0.4999999999999999,"im":0.0},{"re":0.4999999999999999,"im":0.0}]}]}"#;
+
+        assert_eq!(response.status(), Status::Ok);
+        assert_eq!(response.into_string(), Some(expected_response.to_string()));
+    }
+
+    #[test]
+    fn test_simulate_circuit_2() {
+        let client = Client::tracked(rocket()).expect("valid rocket instance");
+
+        let response = client
+            .post("/simulate")
+            .header(rocket::http::ContentType::JSON)
+            .body(
+                r#"{
+                    "circuit_matrix": [
+                        ["H", "CNOT-1"],
+                        ["I", "CNOT-2"]
+                    ]
+                }"#,
+            )
+            .dispatch();
+
+        let expected_response = r#"{"state_list":[{"step":0,"state":[{"re":1.0,"im":0.0},{"re":0.0,"im":0.0},{"re":0.0,"im":0.0},{"re":0.0,"im":0.0}]},{"step":1,"state":[{"re":0.7071067811865475,"im":0.0},{"re":0.7071067811865475,"im":0.0},{"re":0.0,"im":0.0},{"re":0.0,"im":0.0}]},{"step":2,"state":[{"re":0.7071067811865475,"im":0.0},{"re":0.0,"im":0.0},{"re":0.0,"im":0.0},{"re":0.7071067811865475,"im":0.0}]}]}"#;
+
+        assert_eq!(response.status(), Status::Ok);
+        assert_eq!(response.into_string(), Some(expected_response.to_string()));
+    }
 }
