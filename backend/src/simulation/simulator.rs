@@ -1,13 +1,19 @@
 use crate::simulation::circuit_parser::build_circuit_from_data;
+use crate::simulation::circuit_validator::{validate_grid_input, QuantumCircuitError};
 use crate::simulation::quantum_gate::QuantumGate;
 use crate::simulation::quantum_state::QuantumState;
 use crate::simulation::utils::{format_to_complex_container, to_little_endian};
 use crate::Step;
 use ndarray::Array1;
 
-pub fn simulate_circuit(incoming_data: Vec<Vec<&str>>) -> Vec<Step> {
-    let mut state = QuantumState::new(&vec![0_usize; incoming_data.len()] as &[usize]);
+pub fn simulate_circuit(incoming_data: Vec<Vec<&str>>) -> Result<Vec<Step>, QuantumCircuitError> {
+    let validation_result = validate_grid_input(&incoming_data);
+    if validation_result.is_err() {
+        return Err(validation_result.unwrap_err());
+    }
+
     let circuit: Array1<QuantumGate> = build_circuit_from_data(incoming_data);
+    let mut state = QuantumState::new(&vec![0_usize; circuit.get(0).unwrap().size] as &[usize]);
 
     let mut state_list: Vec<Step> = vec![];
 
@@ -25,7 +31,7 @@ pub fn simulate_circuit(incoming_data: Vec<Vec<&str>>) -> Vec<Step> {
         });
     }
 
-    state_list
+    Ok(state_list)
 }
 
 #[cfg(test)]

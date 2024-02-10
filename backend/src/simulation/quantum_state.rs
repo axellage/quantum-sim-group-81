@@ -11,7 +11,7 @@ pub struct QuantumState {
 }
 
 impl QuantumState {
-    // Create a QuantumState from a list of bits
+    // Create a QuantumState from a list of bits, panics if the number of qubits is not between 1 and 6 or if the bits are not 0 or 1
     pub fn new(bits: &[usize]) -> QuantumState {
         let no_of_qubits = bits.len();
 
@@ -39,12 +39,10 @@ impl QuantumState {
         self.col.len().ilog2().to_usize().unwrap()
     }
 
-    // Apply a QuantumGate to a QuantumState
+    // Apply a QuantumGate to a QuantumState, panic if gate and state are not of the same size, if the gate size is 0, return the state unchanged
     pub fn apply_gate(self, gate: QuantumGate) -> QuantumState {
         if gate.size == 0 {
-            return QuantumState {
-                col: self.clone().col,
-            };
+            return self;
         }
 
         if self.size() != gate.size {
