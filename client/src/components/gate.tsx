@@ -4,10 +4,12 @@ import {CSS} from '@dnd-kit/utilities';
 
 export function Gate(props:any) {
     const {attributes, listeners, setNodeRef, transform} = useDraggable({
-        id: 'unique-id',
+        id: props.name,
       });
       const style = {
         transform: CSS.Translate.toString(transform),
+        width: 60,
+        height: 60
       };
       
       return (
