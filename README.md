@@ -1,5 +1,5 @@
 # Quantum simulation project
-A education quantum computer simulation developed as part of a candidate thesis in Chalmers University of Technology in Spring 2024.
+An educational quantum computer simulator developed as part of a bachelor's thesis at Chalmers University of Technology in Spring 2024.
 ## Prerequisites
 - Ensure you have Rust and Cargo installed. You can get them from the [official Rust website](https://www.rust-lang.org/tools/install).
 - Rocket requires the latest stable version of Rust. Make sure you have it by running `rustup update`.
