@@ -32,6 +32,8 @@ function Toolbar() {
 
 function Circuitboard() {
   const [qubitLines, setQubitLines] = useState<ReactNode[]>([]);
+  const [circuit, setCircuit] = useState([["H"]]);
+  const [states, setStates] = useState("");
   const {isOver, setNodeRef} = useDroppable({
     id: "droppable",
   });
@@ -92,6 +94,14 @@ function Circuitboard() {
   
   }
 
+  async function sendCircuit() {
+    const response = await axios.post('http://localhost:8000/simulate',
+        {circuit_matrix: circuit})
+  .then(function(response: any){
+    console.log(response);
+    setStates(JSON.stringify(response.data.state_list));
+  })}
+
   return (
     <div className="Circuitboard" ref={setNodeRef} style={style}>
       <section className="circuit">
@@ -100,6 +110,8 @@ function Circuitboard() {
       <button onClick={addQubit}>+</button>
       <button onClick={removeQubit}>-</button>
       <button onClick={ping}>ping</button>
+      <button onClick={sendCircuit}>send example circuit</button>
+      <section className="states"><h1 style={{ color: 'white' }}>{states}</h1></section>
     </div>
   );
 }
