@@ -5,6 +5,9 @@ import {CSS} from '@dnd-kit/utilities';
 export function Gate(props:any) {
     const {attributes, listeners, setNodeRef, transform} = useDraggable({
         id: props.name,
+        data: {
+          type: 'gate',
+        },
       });
       const style = {
         transform: CSS.Translate.toString(transform),

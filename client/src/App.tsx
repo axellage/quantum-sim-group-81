@@ -20,9 +20,9 @@ function Toolbar() {
       <div className="toolbar">
         <section className="gate-container">
           {gateH}
-          {gateX}
-          {gateY}
-          {gateZ}
+            {gateX}
+            {gateY}
+            {gateZ}
         </section>
       </div>
     );
@@ -36,6 +36,9 @@ function Circuitboard() {
   const [states, setStates] = useState("");
   const {isOver, setNodeRef} = useDroppable({
     id: "droppable",
+    data: {
+      accepts:['gate'],
+    }
   });
   const style = {
     opacity: isOver ? 1 : 0.5,
@@ -44,15 +47,15 @@ function Circuitboard() {
   useEffect(() => {
     // Initialize ketLines with three elements when the component mounts
     setQubitLines([
-      <div className="qubit-line" data-testid="qubit-line" key={0}>
+        <div className="qubit-line" data-testid="qubit-line" key={0}>
         <p>|0⟩</p><hr/>
-      </div>,
-      <div className="qubit-line" data-testid="qubit-line" key={1}>
-        <p>|0⟩</p><hr/>
-      </div>,
-      <div className="qubit-line" data-testid="qubit-line" key={2}>
-        <p>|0⟩</p><hr/>
-      </div>
+        </div>,
+        <div className="qubit-line" data-testid="qubit-line" key={1}>
+          <p>|0⟩</p><hr/>
+        </div>,
+        <div className="qubit-line" data-testid="qubit-line" key={2}>
+          <p>|0⟩</p><hr/>
+        </div>
     ]);
   }, []); // Empty dependency array to ensure this effect runs only once, on mount
 
@@ -105,7 +108,7 @@ function Circuitboard() {
   return (
     <div className="Circuitboard" ref={setNodeRef} style={style}>
       <section className="circuit">
-        {qubitLines}
+          {qubitLines}
       </section>
       <button onClick={addQubit}>+</button>
       <button onClick={removeQubit}>-</button>
