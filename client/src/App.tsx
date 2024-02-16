@@ -106,8 +106,8 @@ function Circuitboard() {
   })}
 
   return (
-    <div className="Circuitboard" ref={setNodeRef} style={style}>
-      <section className="circuit">
+    <div className="Circuitboard">
+      <section className="circuit" ref={setNodeRef} style={style}>
           {qubitLines}
       </section>
       <button onClick={addQubit}>+</button>
