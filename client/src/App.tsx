@@ -3,10 +3,13 @@ import './App.css';
 import {DndContext} from '@dnd-kit/core';
 import {useDraggable, useDroppable} from '@dnd-kit/core';
 import {CSS} from '@dnd-kit/utilities';
+import axios from 'axios';
 
 function App() {
   // This matrix doesn't contain actual elements, just information about what the circuit looks like.
   const [circuit, setCircuit] = useState([["I","I","I","I"], ["I","I","I","I"], ["I","I","I","I"]]);
+  // Initializing this because it complains about type otherwise, there is probably a better way to do it.
+  const [states, setStates] = useState([{"step":0, "state":[]}]);
 
   // TODO implement setCircuit (aka add + and - buttons).
 
@@ -27,7 +30,6 @@ function App() {
       <Gate name="Z"/>
       <Gate name="H"/>
     </div>
-    
     );
   }
   
@@ -37,6 +39,12 @@ function App() {
       <QubitLine id="0"/>
       <QubitLine id="1"/>
       <QubitLine id="2"/>
+      <button onClick={sendCircuit}>send circuit</button>
+      <section className="states">
+        {states.map((timeStep) => (
+        <h2>{JSON.stringify(timeStep.state)}</h2>
+        ))}
+      </section>
     </div>)
   }
   
@@ -108,8 +116,17 @@ function App() {
       } 
     });
     setCircuit(newCircuit);
+  }
+
+  async function sendCircuit() {
+    const response = await axios.post('http://localhost:8000/simulate',
+        {circuit_matrix: circuit})
+  .then(function(response: any){
+    console.log(response);
+    setStates(response.data.state_list);
+  })}
 }
-}
+
 function PlacedGate(props:any){
   const style = {
     width: 60,
@@ -127,6 +144,9 @@ function PlacedGate(props:any){
     );
   } else return null;
   
+  
 }
+
+
 
 export default App;
