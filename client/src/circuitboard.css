@@ -1,0 +1,51 @@
+.Circuitboard {
+  background-color: #22252b;
+  padding: 1rem;
+  padding-left: 4rem;
+  
+}
+
+.circuit {
+  max-height: calc(7 * 3rem); /* Adjust as needed based on the height of a single ket-line */
+  overflow-y: auto;
+}
+
+.qubit-line {
+    display: flex;
+    align-items: baseline;
+    justify-content: baseline;
+}
+
+p {
+    color: white;
+    font-size: larger;
+}
+
+hr {
+    width: 80%;
+    margin-inline-start: 2.5rem;
+    margin-top: 1.65rem;
+    color: white;
+    position: absolute;
+}
+
+button {
+  background-color: #1A1A1A;
+  color: white;
+  cursor:pointer;
+  font-size: larger;
+}
+
+button:disabled {
+  pointer-events: none;
+}
+
+button:hover {
+  color: #fff;
+  background-color: #080808;
+}
+
+button:active {
+  box-shadow: none;
+  transform: translateY(0);
+}

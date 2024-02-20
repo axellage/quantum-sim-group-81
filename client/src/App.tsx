@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
+import './circuitboard.css';
 import {DndContext} from '@dnd-kit/core';
 import {useDraggable, useDroppable} from '@dnd-kit/core';
 import {CSS} from '@dnd-kit/utilities';
@@ -52,6 +53,7 @@ function App() {
     return (
     <div className='qubitLine'>
       <h2>|0⟩</h2>
+      <hr/>
       {// This generates a qubit line element from the 'circuit' matrix.
       }
       {circuit[Number(props.id)].map((gate, index) => <Slot gateType = {gate} id = {props.id + index.toString()}/>)}
@@ -64,8 +66,7 @@ function App() {
       });
       const style = {
         transform: CSS.Translate.toString(transform),
-        width: 60,
-        height: 60
+        
       };
       
       return (
