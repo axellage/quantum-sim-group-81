@@ -1,0 +1,22 @@
+.Toolbar {
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: auto auto;
+    width: 5%;
+}
+
+.Toolbar > * {
+    margin: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.placedGate {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+}

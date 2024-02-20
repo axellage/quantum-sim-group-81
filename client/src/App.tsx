@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import './circuitboard.css';
+import './toolbar.css';
 import {DndContext} from '@dnd-kit/core';
 import {useDraggable, useDroppable} from '@dnd-kit/core';
 import {CSS} from '@dnd-kit/utilities';
@@ -25,7 +26,7 @@ function App() {
 
   function Toolbar(){
     return (
-    <div>
+    <div className='Toolbar'>
       <Gate name="X"/>
       <Gate name="Y"/>
       <Gate name="Z"/>
@@ -68,6 +69,8 @@ function App() {
       });
       const style = {
         transform: CSS.Translate.toString(transform),
+        width: 70,
+        height: 70
         
       };
       
@@ -127,17 +130,11 @@ function App() {
 }
 
 function PlacedGate(props:any){
-  const style = {
-    width: 60,
-    height: 60,
-    backgroundColor: "cyan",
-    color: "white"
-  };
   
   // Display nothing if there is no placed gate (which is the same as the identity gate).
   if(props.name != "I"){
     return (
-      <button style={style} className = "placedGate">
+      <button className = "placedGate">
         <h1>{props.name}</h1>
       </button>
     );
