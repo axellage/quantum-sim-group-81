@@ -56,7 +56,9 @@ function App() {
       <hr/>
       {// This generates a qubit line element from the 'circuit' matrix.
       }
-      {circuit[Number(props.id)].map((gate, index) => <Slot gateType = {gate} id = {props.id + index.toString()}/>)}
+      <div className='slot-container'>
+        {circuit[Number(props.id)].map((gate, index) => <Slot gateType = {gate} id = {props.id + index.toString()}/>)}
+      </div>
     </div>);
   }
   
@@ -84,10 +86,6 @@ function App() {
     // TODO: Move to CSS.
     const style = {
       opacity: (isOver ? .8 : 1),
-      color: 'black',
-      backgroundColor: 'white',
-      width: 70,
-      height: 70
     };
   
     return (

@@ -10,10 +10,12 @@
   overflow-y: auto;
 }
 
-.qubit-line {
+.qubitLine {
+    padding: 1rem;
+    padding-left: 2rem;
     display: flex;
-    align-items: baseline;
-    justify-content: baseline;
+    align-items: center;
+    background-color: #24272e;
 }
 
 p {
@@ -24,7 +26,6 @@ p {
 hr {
     width: 80%;
     margin-inline-start: 2.5rem;
-    margin-top: 1.65rem;
     color: white;
     position: absolute;
 }
@@ -48,4 +49,16 @@ button:hover {
 button:active {
   box-shadow: none;
   transform: translateY(0);
+}
+
+.slot-container {
+    display: flex;
+    width: 80%;
+    margin-left: 1rem;
+}
+
+.slot-container > * {
+    background-color: transparent;
+    height: 70px;
+    width: 70px;
 }
