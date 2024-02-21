@@ -11,7 +11,8 @@ function App() {
   // This matrix doesn't contain actual elements, just information about what the circuit looks like.
   const [circuit, setCircuit] = useState([["I","I","I","I"], ["I","I","I","I"], ["I","I","I","I"]]);
   // Initializing this because it complains about type otherwise, there is probably a better way to do it.
-  const [states, setStates] = useState([{"step":0, "state":[]}]);
+  // TODO have it show something before user has modified circuit
+  const [states, setStates] = useState([{"step":0, "state":[]},{"step":1, "state":[]},{"step":2, "state":[]}]);
   const [timeStep, setTimeStep] = useState(0);
 
   // TODO implement setCircuit (aka add + and - buttons).
@@ -44,7 +45,6 @@ function App() {
       <QubitLine id="1"/>
       <QubitLine id="2"/>
       <TimeStepButtons />
-      <button onClick={sendCircuit}>send circuit</button>
     </div>)
   }
   
@@ -114,9 +114,10 @@ function App() {
 
   function handleDragEnd(event:any){
     const {active, over} = event;
-
-    console.log("Placed gate on position " + over.id[1] + " on qubit line " + over.id[0]);
-
+    if(over === null){
+      return;
+    }
+    
     // These nested maps replace the gate at the given position.
     const newCircuit = circuit.map((line, i) => {
       if(i === (Number(over.id[0]))) {

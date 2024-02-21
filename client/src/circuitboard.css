@@ -61,9 +61,20 @@ button:active {
     background-color: transparent;
     height: 70px;
     width: 70px;
-    margin-left: 0.75rem;
+    margin-left: 1.5rem;
 }
 
 .slot-container > *:hover {
    background-color: #1d2025;
+}
+
+.timeStepButtons {
+  margin-left: 5.5rem;
+}
+
+.timeStepButtons > * {
+    display: flex;
+    align-items: center;
+    background-color: #24272e;
+    margin-left: 2rem;
 }
