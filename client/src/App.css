@@ -3,6 +3,11 @@
     flex-direction: row;
 }
 
+.timeStepButtons{
+    display: flex;
+    flex-direction: row;
+}
+
 .parent {
     position: relative;
 }

@@ -12,6 +12,7 @@ function App() {
   const [circuit, setCircuit] = useState([["I","I","I","I"], ["I","I","I","I"], ["I","I","I","I"]]);
   // Initializing this because it complains about type otherwise, there is probably a better way to do it.
   const [states, setStates] = useState([{"step":0, "state":[]}]);
+  const [timeStep, setTimeStep] = useState(0);
 
   // TODO implement setCircuit (aka add + and - buttons).
 
@@ -20,6 +21,7 @@ function App() {
       <DndContext onDragEnd={handleDragEnd}>
         <Toolbar />
         <Circuitboard />
+        <ProbDiagram />
       </DndContext>
     </div>
   );
@@ -41,15 +43,28 @@ function App() {
       <QubitLine id="0"/>
       <QubitLine id="1"/>
       <QubitLine id="2"/>
+      <TimeStepButtons />
       <button onClick={sendCircuit}>send circuit</button>
-      <section className="states">
-        {states.map((timeStep) => (
-        <h2>{JSON.stringify(timeStep.state)}</h2>
-        ))}
-      </section>
     </div>)
   }
   
+  function ProbDiagram(){
+    return (
+      <div>
+        {states[timeStep].state.map(thing => <p>{JSON.stringify(thing)}</p>)}
+      </div>
+    );
+  }
+
+  function TimeStepButtons(){
+    return (
+    <div className='timeStepButtons'>
+      <button onClick = {() => setTimeStep(0)}>ᴪ_0</button>
+      <button onClick = {() => setTimeStep(1)}>ᴪ_1</button>
+      <button onClick = {() => setTimeStep(2)}>ᴪ_2</button>
+    </div>);
+  }
+
   function QubitLine(props:any){
     return (
     <div className='qubitLine'>
@@ -86,7 +101,6 @@ function App() {
       id: props.id,
     });
 
-    // TODO: Move to CSS.
     const style = {
       opacity: (isOver ? .8 : 1),
     };
@@ -118,11 +132,12 @@ function App() {
       } 
     });
     setCircuit(newCircuit);
+    sendCircuit(newCircuit);
   }
 
-  async function sendCircuit() {
+  async function sendCircuit(circuitToSend:any) {
     const response = await axios.post('http://localhost:8000/simulate',
-        {circuit_matrix: circuit})
+        {circuit_matrix: circuitToSend})
   .then(function(response: any){
     console.log(response);
     setStates(response.data.state_list);
@@ -130,7 +145,6 @@ function App() {
 }
 
 function PlacedGate(props:any){
-  
   // Display nothing if there is no placed gate (which is the same as the identity gate).
   if(props.name != "I"){
     return (
@@ -139,10 +153,5 @@ function PlacedGate(props:any){
       </button>
     );
   } else return null;
-  
-  
 }
-
-
-
 export default App;

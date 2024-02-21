@@ -54,7 +54,7 @@ button:active {
 .slot-container {
     display: flex;
     width: 80%;
-    margin-left: 1rem;
+    margin-left: 4rem;
 }
 
 .slot-container > * {
