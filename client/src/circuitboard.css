@@ -28,7 +28,7 @@ hr {
     margin-inline-start: 2.5rem;
     color: white;
     position: absolute;
-}
+  }
 
 button {
   background-color: #1A1A1A;
@@ -55,6 +55,7 @@ button:active {
     display: flex;
     width: 80%;
     margin-left: 1rem;
+    z-index: 1;
 }
 
 .slot-container > * {
@@ -62,8 +63,14 @@ button:active {
     height: 70px;
     width: 70px;
     margin-left: 0.75rem;
+    
 }
 
 .slot-container > *:hover {
    background-color: #1d2025;
+}
+
+Slot {
+  position: absolute;
+  z-index: 10;
 }

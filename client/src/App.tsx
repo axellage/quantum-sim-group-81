@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, ReactNode, useEffect } from 'react';
 import './App.css';
 import './circuitboard.css';
 import './toolbar.css';
@@ -36,11 +36,54 @@ function App() {
   }
   
   function Circuitboard(){
+    const [qubitLines, setQubitLines] = useState<ReactNode[]>([]);
+    useEffect(() => {
+      // Initialize ketLines with three elements when the component mounts
+      setQubitLines([
+        <div>
+          <QubitLine id="0"/>
+        </div>,
+        <div>
+          <QubitLine id="1"/>
+        </div>,
+        <div>
+          <QubitLine id="2"/>
+        </div>
+      ]);
+    }, []); // Empty dependency array to ensure this effect runs only once, on mount
+  
+    const addQubit = () => {
+      if (qubitLines.length < 6) {
+        setQubitLines(prevQubitLines => [
+          ...prevQubitLines,
+          <div>
+            <QubitLine id={JSON.stringify(qubitLines.length)}/>
+          </div>
+        ]);
+      }
+      else {
+        alert("No more qubits can be added");
+        console.log("No more qubits can be added");
+      }
+    };
+  
+    const removeQubit = () => {
+      if (qubitLines.length > 1) {
+        setQubitLines(prevQubitLines => prevQubitLines.slice(0, -1));
+      }
+      else {
+        //TODO make this a visible error
+        console.log("Already 0 qubits");
+      }
+    };
+
     return(
     <div>
-      <QubitLine id="0"/>
-      <QubitLine id="1"/>
-      <QubitLine id="2"/>
+      <section className="circuit">
+        {qubitLines}
+      </section>
+      <button onClick={addQubit}>+</button>
+      <button onClick={removeQubit}>-</button>
       <button onClick={sendCircuit}>send circuit</button>
       <section className="states">
         {states.map((timeStep) => (
@@ -50,17 +93,19 @@ function App() {
     </div>)
   }
   
-  function QubitLine(props:any){
+  function QubitLine(props:any) {
+    const qubitLineId = Number(props.id);
+    const circuitLine = circuit[qubitLineId] || []; // Fallback to an empty array if circuit[qubitLineId] is undefined
+  
     return (
-    <div className='qubitLine'>
-      <h2>|0⟩</h2>
-      <hr/>
-      {// This generates a qubit line element from the 'circuit' matrix.
-      }
-      <div className='slot-container'>
-        {circuit[Number(props.id)].map((gate, index) => <Slot gateType = {gate} id = {props.id + index.toString()}/>)}
+      <div className='qubitLine'>
+        <h2>|0⟩</h2>
+        <hr/>
+        <div className='slot-container'>
+          {circuitLine.map((gate, index) => <Slot gateType={gate} id={`${qubitLineId}${index}`} key={`${qubitLineId}${index}`} />)}
+        </div>
       </div>
-    </div>);
+    );
   }
   
   function Gate(props:any) {
