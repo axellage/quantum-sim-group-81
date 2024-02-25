@@ -6,13 +6,13 @@
 }
 
 .circuit {
-  max-height: calc(7 * 3rem); /* Adjust as needed based on the height of a single ket-line */
-  overflow-y: auto;
+  max-height: calc(7 * 4rem); /* Adjust as needed based on the height of a single ket-line */
+  background-color: #22252b;
+  padding: 1rem;
 }
 
 .qubitLine {
-    padding: 0.75rem;
-    padding-left: 2rem;
+    padding: 0.1rem;
     display: flex;
     align-items: center;
     background-color: #24272e;
@@ -60,8 +60,8 @@ button:active {
 
 .slot-container > * {
     background-color: transparent;
-    height: 70px;
-    width: 70px;
+    height: 50px;
+    width: 50px;
     margin-left: 0.75rem;
     
 }

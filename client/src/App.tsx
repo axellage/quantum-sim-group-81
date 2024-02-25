@@ -114,8 +114,8 @@ function App() {
       });
       const style = {
         transform: CSS.Translate.toString(transform),
-        width: 70,
-        height: 70
+        width: 50,
+        height: 50
         
       };
       
