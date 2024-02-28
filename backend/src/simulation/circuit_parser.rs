@@ -2,7 +2,7 @@ use crate::simulation::quantum_gate::QuantumGate;
 use ndarray::{arr2, Array1};
 use num::Complex;
 
-pub fn build_circuit_from_data(grid: Vec<Vec<&str>>) -> Array1<QuantumGate> {
+pub fn build_circuit_from_data(grid: Vec<Vec<&str>>) -> Vec<Vec<(<Vec<i32>, QuantumGate)>> {
     let mut return_list: Vec<QuantumGate> = Vec::new();
 
     for step in 0..grid[0].len() {
