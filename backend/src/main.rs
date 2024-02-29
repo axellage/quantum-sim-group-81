@@ -14,6 +14,8 @@ use rocket::http::Status;
 use rocket::response::{self, Responder, Response};
 use rocket::Request;
 
+use crate::simulation::quantum_state::QuantumState;
+
 #[derive(Serialize, Deserialize)]
 struct IncomingData {
     circuit_matrix: Vec<Vec<String>>,
@@ -33,7 +35,7 @@ struct ComplexContainer {
 
 #[derive(Serialize, Deserialize)]
 struct OutgoingData {
-    state_list: Vec<Step>,
+    state_list: Vec<Vec<(Vec<i32>, QuantumState)>>,
 }
 
 #[derive(Debug, Serialize)]

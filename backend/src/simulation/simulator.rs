@@ -24,7 +24,7 @@ pub fn simulate_circuit(incoming_data: Vec<Vec<&str>>) -> Result<Vec<Vec<(Vec<i3
     state_list.push(current_step);
 
     for (step, gates_at_step) in circuit.into_iter().enumerate() {
-        state_list[step].into_iter().map(|(qubits, state)| state.apply_gate(gates_at_step.into_iter().filter(|(qubits_in_gate, gate)| qubits == *qubits_in_gate).next().unwrap().1));
+        state_list[step].iter().map(|(qubits, state)| state.apply_gate(gates_at_step.clone().into_iter().filter(|(qubits_in_gate, gate)| qubits == qubits_in_gate).next().unwrap().1));
     }
 
     Ok(state_list)
