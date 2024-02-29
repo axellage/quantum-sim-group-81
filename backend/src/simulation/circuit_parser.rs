@@ -2,28 +2,20 @@ use crate::simulation::quantum_gate::QuantumGate;
 use ndarray::{arr2, Array1};
 use num::Complex;
 
-pub fn build_circuit_from_data(grid: Vec<Vec<&str>>) -> Vec<Vec<(<Vec<i32>, QuantumGate)>> {
-    let mut return_list: Vec<QuantumGate> = Vec::new();
+pub fn build_circuit_from_data(grid: Vec<Vec<&str>>) -> Vec<Vec<(Vec<i32>, QuantumGate)>> {
+    let mut return_list: Vec<Vec<(Vec<i32>, QuantumGate)>> = Vec::new();
 
     for step in 0..grid[0].len() {
-        let mut combined_gate: Option<QuantumGate> = None;
+        let mut current_gates: Vec<(Vec<i32>, QuantumGate)> = Vec::new();
 
-        for qubit in &grid {
+        for (i, qubit) in grid.iter().enumerate() {
             let gate = parse_gate(qubit[step]);
-
-            // If there is already a gate for this qubit, combine it with the new gate
-            combined_gate = Some(match combined_gate {
-                Some(existing_gate) => existing_gate.kronecker(gate),
-                None => gate,
-            });
+            current_gates.push((vec![i as i32], gate));
         }
 
-        if let Some(gate) = combined_gate {
-            return_list.push(gate);
-        }
+        return_list.push(current_gates);
     }
-
-    Array1::from(return_list)
+    return return_list;
 }
 
 fn parse_gate(gate_string: &str) -> QuantumGate {
