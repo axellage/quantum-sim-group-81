@@ -21,6 +21,7 @@ impl QuantumGate {
             size: 1,
         }
     }
+
     pub fn x_gate() -> QuantumGate {
         QuantumGate {
             matrix: arr2(&[

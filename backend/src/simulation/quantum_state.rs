@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 // QuantumState struct
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct QuantumState {
-    pub qubits: Vec<i32>;
+    pub qubits: Vec<i32>,
     pub col: Array2<Complex<f64>>,
 }
 
