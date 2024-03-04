@@ -9,7 +9,7 @@ import axios from 'axios';
 
 function App() {
   // This matrix doesn't contain actual elements, just information about what the circuit looks like.
-  const [circuit, setCircuit] = useState([["I","I","I","I"], ["I","I","I","I"], ["I","I","I","I"]]);
+  const [circuit, setCircuit] = useState([["I","I","I","I"], ["I","I","I","I"], ["I","I","I","I"], ["I","I","I","I"], ["I","I","I","I"], ["I","I","I","I"]]);
   // Initializing this because it complains about type otherwise, there is probably a better way to do it.
   const [states, setStates] = useState([{"step":0, "state":[]}]);
 
@@ -48,11 +48,20 @@ function App() {
         </div>,
         <div>
           <QubitLine id="2"/>
+        </div>,
+        <div>
+          <QubitLine id="3"/>
+        </div>,
+        <div>
+          <QubitLine id="4"/>
+        </div>,
+        <div>
+          <QubitLine id="5"/>
         </div>
       ]);
     }, []); // Empty dependency array to ensure this effect runs only once, on mount
   
-    const addQubit = () => {
+  {/*  const addQubit = () => {
       if (qubitLines.length < 6) {
         setQubitLines(prevQubitLines => [
           ...prevQubitLines,
@@ -75,15 +84,15 @@ function App() {
         //TODO make this a visible error
         console.log("Already 0 qubits");
       }
-    };
+    };*/}
 
     return(
     <div>
       <section className="circuit">
         {qubitLines}
       </section>
-      <button onClick={addQubit}>+</button>
-      <button onClick={removeQubit}>-</button>
+      {/*<button onClick={addQubit}>+</button>
+      <button onClick={removeQubit}>-</button>*/}
       <button onClick={sendCircuit}>send circuit</button>
       <section className="states">
         {states.map((timeStep) => (
