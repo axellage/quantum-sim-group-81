@@ -137,7 +137,7 @@ function App() {
   }
 
   function ControlGate(props:any) {
-
+    //TODO: getTimestepGates()
     const {attributes, listeners, setNodeRef, transform} = useDraggable({
         id: props.name,
       });
