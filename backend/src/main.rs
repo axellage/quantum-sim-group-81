@@ -35,7 +35,7 @@ struct ComplexContainer {
 
 #[derive(Serialize, Deserialize)]
 struct OutgoingData {
-    state_list: Vec<Vec<(Vec<i32>, QuantumState)>>,
+    state_list: Vec<Vec<QuantumState>>,
 }
 
 #[derive(Debug, Serialize)]

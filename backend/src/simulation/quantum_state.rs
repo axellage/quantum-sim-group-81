@@ -7,13 +7,14 @@ use serde::{Deserialize, Serialize};
 // QuantumState struct
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct QuantumState {
+    pub qubits: Vec<i32>;
     pub col: Array2<Complex<f64>>,
 }
 
 impl QuantumState {
     // Create a QuantumState from a list of bits, panics if the number of qubits is not between 1 and 6 or if the bits are not 0 or 1
-    pub fn new(bits: &[usize]) -> QuantumState {
-        let no_of_qubits = bits.len();
+    pub fn new(qubits: Vec<i32>) -> QuantumState {
+        let no_of_qubits = qubits.len();
 
         if !(1..=6).contains(&no_of_qubits) {
             panic!("Number of qubits must be between 1 and 6, inclusive");
@@ -31,7 +32,7 @@ impl QuantumState {
             Array2::<Complex<f64>>::zeros((2_usize.pow(no_of_qubits as u32), 1));
         col[[index, 0]] = Complex::new(1.0, 0.0);
 
-        QuantumState { col }
+        QuantumState { qubits, col }
     }
 
     // Calculate the number of qubits in the QuantumState
@@ -55,7 +56,13 @@ impl QuantumState {
 
         let col = gate.matrix.dot(&self.clone().col);
 
-        QuantumState { col }
+        QuantumState { self.qubits, col }
+    }
+
+    // Combine this quantum state with another.
+    pub fn combine(self, other_state: QuantumState) -> QuantumState {
+        // TODO
+        QuantumState { self.qubits, self.col}
     }
 }
 
