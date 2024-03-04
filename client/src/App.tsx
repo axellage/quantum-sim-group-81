@@ -29,6 +29,7 @@ function App() {
     <div className='Toolbar'>
       <Gate name="X"/>
       <Gate name="Y"/>
+      <ControlGate name="."/>
       <Gate name="Z"/>
       <Gate name="H"/>
     </div>
@@ -127,6 +128,27 @@ function App() {
         height: 50
         
       };
+      
+      return (
+        <button ref={setNodeRef} style={style} {...listeners} {...attributes}>
+          <h1>{props.name}</h1>
+        </button>
+      );
+  }
+
+  function ControlGate(props:any) {
+
+    const {attributes, listeners, setNodeRef, transform} = useDraggable({
+        id: props.name,
+      });
+      const style = {
+        transform: CSS.Translate.toString(transform),
+        width: 50,
+        height: 50
+        
+      };
+
+      const controledGates: string[] = [];
       
       return (
         <button ref={setNodeRef} style={style} {...listeners} {...attributes}>
