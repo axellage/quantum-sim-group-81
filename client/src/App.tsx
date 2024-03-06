@@ -29,7 +29,7 @@ function App() {
     <div className='Toolbar'>
       <Gate name="X"/>
       <Gate name="Y"/>
-      <ControlGate name="."/>
+      <Gate name="."/>
       <Gate name="Z"/>
       <Gate name="H"/>
     </div>
@@ -38,8 +38,8 @@ function App() {
   
   function Circuitboard(){
     const [qubitLines, setQubitLines] = useState<ReactNode[]>([]);
+    console.log(states);
     useEffect(() => {
-      // Initialize ketLines with three elements when the component mounts
       setQubitLines([
         <div>
           <QubitLine id="0"/>
@@ -135,27 +135,6 @@ function App() {
         </button>
       );
   }
-
-  function ControlGate(props:any) {
-    //TODO: getTimestepGates()
-    const {attributes, listeners, setNodeRef, transform} = useDraggable({
-        id: props.name,
-      });
-      const style = {
-        transform: CSS.Translate.toString(transform),
-        width: 50,
-        height: 50
-        
-      };
-
-      const controledGates: string[] = [];
-      
-      return (
-        <button ref={setNodeRef} style={style} {...listeners} {...attributes}>
-          <h1>{props.name}</h1>
-        </button>
-      );
-  }
   
   function Slot(props:any) {
     const {isOver, setNodeRef} = useDroppable({
@@ -166,12 +145,23 @@ function App() {
     const style = {
       opacity: (isOver ? .8 : 1),
     };
-  
-    return (
-      <div ref={setNodeRef} style={style}>
-        <PlacedGate name = {props.gateType} />
-      </div>
-    );
+
+    if(props.gateType == "."){
+      console.log("Placed control gate");
+      return (
+        <div ref={setNodeRef} style={style}>
+          <PlacedControlGate name = {props.gateType} />
+        </div>
+      );
+    }else {
+      console.log("Placed other gate")
+      return (
+        <div ref={setNodeRef} style={style}>
+          <PlacedGate name = {props.gateType} />
+        </div>
+      );
+    }
+    
   }
 
   function handleDragEnd(event:any){
@@ -209,6 +199,23 @@ function PlacedGate(props:any){
   
   // Display nothing if there is no placed gate (which is the same as the identity gate).
   if(props.name != "I"){
+    return (
+      <button className = "placedGate">
+        <h1>{props.name}</h1>
+      </button>
+    );
+  } else return null;
+  
+  
+}
+
+function PlacedControlGate(props:any, event:any){
+  
+  // Display nothing if there is no placed gate (which is the same as the identity gate).
+  //const {active, over} = event;
+
+  
+  if(props.name == "."){
     return (
       <button className = "placedGate">
         <h1>{props.name}</h1>
