@@ -27,11 +27,11 @@ function App() {
   function Toolbar(){
     return (
     <div className='Toolbar'>
-      <Gate name="X"/>
-      <Gate name="Y"/>
-      <Gate name="."/>
-      <Gate name="Z"/>
-      <Gate name="H"/>
+      <Gate name="X" id = "X"/>
+      <Gate name="Y" id = "Y"/>
+      <Gate name="." id = "C_down"/>
+      <Gate name="Z" id = "Z"/>
+      <Gate name="H" id = "H"/>
     </div>
     );
   }
@@ -112,7 +112,9 @@ function App() {
         <h2>|0⟩</h2>
         <hr/>
         <div className='slot-container'>
-          {circuitLine.map((gate, index) => <Slot gateType={gate} id={`${qubitLineId}${index}`} key={`${qubitLineId}${index}`} />)}
+          {//TODO create records for gateTypes and their corresponding names
+          }
+          {circuitLine.map((gate, index) => <Slot name={gate} gateType={gate} id={`${qubitLineId}${index}`} key={`${qubitLineId}${index}`} />)}
         </div>
       </div>
     );
@@ -120,7 +122,7 @@ function App() {
   
   function Gate(props:any) {
     const {attributes, listeners, setNodeRef, transform} = useDraggable({
-        id: props.name,
+        id: props.id,
       });
       const style = {
         transform: CSS.Translate.toString(transform),
@@ -146,7 +148,7 @@ function App() {
       opacity: (isOver ? .8 : 1),
     };
 
-    if(props.gateType == "."){
+    /*if(props.gateType == "."){
       console.log("Placed control gate");
       return (
         <div ref={setNodeRef} style={style}>
@@ -160,12 +162,27 @@ function App() {
           <PlacedGate name = {props.gateType} />
         </div>
       );
-    }
-    
+    }*/
+      return (
+        <div ref={setNodeRef} style={style}>
+          <PlacedGate name = {props.name} gateType = {props.gateType}/>
+        </div>
+      );
   }
 
   function handleDragEnd(event:any){
     const {active, over} = event;
+    console.log(over.id[0]);
+    if(active.id == "C_down"){
+      if(over.id[0] == 5){
+        alert("No gate to control.");
+        return;
+      }
+      if(circuit[parseInt(over.id[0]) + 1][parseInt(over.id[1])] == "I"){
+        alert("No gate to control.");
+        return;
+      }
+    }
 
     console.log("Placed gate on position " + over.id[1] + " on qubit line " + over.id[0]);
 
@@ -187,29 +204,60 @@ function App() {
   }
 
   async function sendCircuit() {
+    console.log("Sending circuit: " + convertToOldVersion(circuit));
     const response = await axios.post('http://localhost:8000/simulate',
-        {circuit_matrix: circuit})
+        {circuit_matrix: convertToOldVersion(circuit)})
   .then(function(response: any){
     console.log(response);
     setStates(response.data.state_list);
   })}
+
+  function convertToOldVersion(newCircuit:any){
+    for(let i = 0; i < newCircuit.length - 1; i++){
+      for(let j = 0; j < newCircuit[0].length; j++){
+        if(newCircuit[i][j] == "C_down"){
+          newCircuit[i][j] = "CNOT-1";
+          newCircuit[i + 1][j] = "CNOT-2";
+          //newCircuit = swapMatrixItem(newCircuit, i + 1, j, "CNOT-2")
+        }
+      }
+    }
+    return newCircuit;
+  }
+
+  /*function swapMatrixItem(matrix:string[][], y:number, x:number, newItem:string){
+    const newMatrix = matrix.map((line, i) => {
+      if(i === y) {
+        return (line.map((gate, j) => {
+          if(j === x){
+            return (newItem);
+          } else{
+            return (gate);
+          }
+        }));
+      } else {
+        return line;
+      } 
+    });
+  }*/
 }
 
 function PlacedGate(props:any){
   
   // Display nothing if there is no placed gate (which is the same as the identity gate).
-  if(props.name != "I"){
+  if(props.gateType != "I"){
     return (
       <button className = "placedGate">
         <h1>{props.name}</h1>
       </button>
     );
-  } else return null;
+  } 
+  else return null;
   
   
 }
 
-function PlacedControlGate(props:any, event:any){
+/*function PlacedControlGate(props:any, event:any){
   
   // Display nothing if there is no placed gate (which is the same as the identity gate).
   //const {active, over} = event;
@@ -224,7 +272,7 @@ function PlacedControlGate(props:any, event:any){
   } else return null;
   
   
-}
+}*/
 
 
 
