@@ -2,6 +2,7 @@ import React, { useState, ReactNode, useEffect } from 'react';
 import './App.css';
 import './circuitboard.css';
 import './toolbar.css';
+import Toolbar from './toolbar';
 import {DndContext} from '@dnd-kit/core';
 import {useDraggable, useDroppable} from '@dnd-kit/core';
 import {CSS} from '@dnd-kit/utilities';
@@ -24,17 +25,7 @@ function App() {
     </div>
   );
 
-  function Toolbar(){
-    return (
-    <div className='Toolbar'>
-      <Gate name="X" id = "X"/>
-      <Gate name="Y" id = "Y"/>
-      <Gate name="." id = "C_down"/>
-      <Gate name="Z" id = "Z"/>
-      <Gate name="H" id = "H"/>
-    </div>
-    );
-  }
+  
   
   function Circuitboard(){
     const [qubitLines, setQubitLines] = useState<ReactNode[]>([]);
@@ -120,23 +111,6 @@ function App() {
     );
   }
   
-  function Gate(props:any) {
-    const {attributes, listeners, setNodeRef, transform} = useDraggable({
-        id: props.id,
-      });
-      const style = {
-        transform: CSS.Translate.toString(transform),
-        width: 50,
-        height: 50
-        
-      };
-      
-      return (
-        <button ref={setNodeRef} style={style} {...listeners} {...attributes}>
-          <h1>{props.name}</h1>
-        </button>
-      );
-  }
   
   function Slot(props:any) {
     const {isOver, setNodeRef} = useDroppable({
