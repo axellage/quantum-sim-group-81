@@ -89,6 +89,70 @@ impl QuantumGate {
         }
     }
 
+    pub fn c_down(gate_underneath: QuantumGate) -> QuantumGate {
+        QuantumGate {
+            matrix: arr2(&[
+                [
+                    Complex::new(1.0, 0.0),
+                    Complex::new(0.0, 0.0),
+                    Complex::new(0.0, 0.0),
+                    Complex::new(0.0, 0.0),
+                ],
+                [
+                    Complex::new(0.0, 0.0),
+                    Complex::new(1.0, 0.0),
+                    Complex::new(0.0, 0.0),
+                    Complex::new(0.0, 0.0),
+                ],
+                [
+                    Complex::new(0.0, 0.0),
+                    Complex::new(0.0, 0.0),
+                    gate_underneath[0][0],
+                    gate_underneath[0][1],
+                ],
+                [
+                    Complex::new(0.0, 0.0),
+                    Complex::new(0.0, 0.0),
+                    gate_underneath[1][0],
+                    gate_underneath[1][1],
+                ],
+            ]),
+            size: 2,
+        }
+    }
+
+    pub fn c_up(gate_above: QuantumGate) -> QuantumGate {
+        QuantumGate {
+            matrix: arr2(&[
+                [
+                    Complex::new(1.0, 0.0),
+                    Complex::new(0.0, 0.0),
+                    Complex::new(0.0, 0.0),
+                    Complex::new(0.0, 0.0),
+                ],
+                [
+                    Complex::new(0.0, 0.0),
+                    gate_above[0][0],
+                    Complex::new(0.0, 0.0),
+                    gate_above[0][1],
+                ],
+                [
+                    Complex::new(0.0, 0.0),
+                    Complex::new(0.0, 0.0),
+                    Complex::new(1.0, 0.0),
+                    Complex::new(0.0, 0.0),
+                ],
+                [
+                    Complex::new(0.0, 0.0),
+                    gate_above[1][0],
+                    Complex::new(0.0, 0.0),
+                    gate_above[1][1],
+                ],
+            ]),
+            size: 2,
+        }
+    }
+
     pub fn cnot_gate() -> QuantumGate {
         QuantumGate {
             matrix: arr2(&[

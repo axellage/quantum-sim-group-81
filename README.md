@@ -56,7 +56,8 @@ The circuit_matrix is a 2-dimensional list of strings, where each row represents
 | Pauli-X      | X        |         |
 | Identity gate or wire| I         |         |
 | Hadamard gate | H        |         |
-| CNOT gate    | CNOT-1 & CNOT-2         | CNOT-1 is control and CNOT-2 is target*        |
+| Control gate underneath    | C_down         | Represents a control bit that controls whatever 1-qubit gate that is underneath it        |
+| Control gate above    | C_up         | Same as c_down but the controlled gate it above it        |
 | SWAP gate       | SWAP-1 & SWAP-2        |         |
 | Toffoli gate    | CCNOT-1 & CCNOT-2 & CCNOT-3         | CCNOT-1 and CCNOT-2 is control and CCNOT-3 is target* |
 
@@ -80,11 +81,14 @@ The response is a JSON object with a key state_list, which is a list of objects 
 ```
 Each object in the state_list has a step indicating the current step, and a state representing the state vector after that step. The state is a list of complex numbers, where each complex number is represented as a list [Real, Imaginary] with real and imaginary parts (both float64).
 
+### Controlled gates
+There are a few restrictions on using controlled gates. The control bit has to be directly above or underneath the gate it is controlling, and right now only one control bit per gate is allowed. In the future we plan to implement controlled gates with two control bits, so that we can have toffoli gates for example.
+
 ### Example
 Request:
 ```json 
 {
-    "circuit_matrix": [["H", "CNOT-1"], ["I", "CNOT-2"]]
+    "circuit_matrix": [["H", "C"], ["I", "X"]]
 }
 ```
 Response:

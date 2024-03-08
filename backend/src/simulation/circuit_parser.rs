@@ -18,71 +18,14 @@ pub fn build_circuit_from_data(grid: Vec<Vec<&str>>) -> Vec<Vec<(Vec<i32>, Quant
                     // Control bit that controls gate directly underneath it
                     let gate_underneath: QuantumGate = parse_gate(qubit[step + 1]).left();
 
-                    // TODO: move this matrix to quantum_gate as a function that takes in the 1-qubit gate that is to be controlled.
-                    let control_gate: QuantumGate = QuantumGate {
-                        matrix: arr2(&[
-                            [
-                                Complex::new(1.0, 0.0),
-                                Complex::new(0.0, 0.0),
-                                Complex::new(0.0, 0.0),
-                                Complex::new(0.0, 0.0),
-                            ],
-                            [
-                                Complex::new(0.0, 0.0),
-                                Complex::new(1.0, 0.0),
-                                Complex::new(0.0, 0.0),
-                                Complex::new(0.0, 0.0),
-                            ],
-                            [
-                                Complex::new(0.0, 0.0),
-                                Complex::new(0.0, 0.0),
-                                gate_underneath[0][0],
-                                gate_underneath[0][1],
-                            ],
-                            [
-                                Complex::new(0.0, 0.0),
-                                Complex::new(0.0, 0.0),
-                                gate_underneath[1][0],
-                                gate_underneath[1][1],
-                            ],
-                        ]),
-                        size: 2,
-                    }
+                    let control_gate: QuantumGate = QuantumGate::c_down(gate_underneath);
+
                     current_gates.push((vec![i as i32, (i+1) as i32], control_gate));
                 } else if(gate.right() == "c_up"){
                     // Control bit that controls gate directly above it
                     let gate_above: QuantumGate = parse_gate(qubit[step - 1]).left();
 
-                    // TODO: move this matrix to quantum_gate as a function that takes in the 1-qubit gate that is to be controlled.
-                    let control_gate: QuantumGate = QuantumGate {
-                        matrix: arr2(&[
-                            [
-                                Complex::new(1.0, 0.0),
-                                Complex::new(0.0, 0.0),
-                                Complex::new(0.0, 0.0),
-                                Complex::new(0.0, 0.0),
-                            ],
-                            [
-                                Complex::new(0.0, 0.0),
-                                gate_above[0][0],
-                                Complex::new(0.0, 0.0),
-                                gate_above[0][1],
-                            ],
-                            [
-                                Complex::new(0.0, 0.0),
-                                Complex::new(0.0, 0.0),
-                                Complex::new(1.0, 0.0),
-                                Complex::new(0.0, 0.0),
-                            ],
-                            [
-                                Complex::new(0.0, 0.0),
-                                gate_above[1][0],
-                                Complex::new(0.0, 0.0),
-                                gate_above[1][1],
-                            ],
-                        ]),
-                        size: 2,
-                    }
+                    let control_gate: QuantumGate = QuantumGate::c_up(gate_above);
                     current_gates.push((vec![i as i32, (i+1) as i32], control_gate));
                 }
         

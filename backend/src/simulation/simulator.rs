@@ -6,19 +6,65 @@ use crate::simulation::utils::{format_to_complex_container, to_little_endian};
 use crate::Step;
 use ndarray::Array1;
 
-pub fn simulate_circuit(incoming_data: Vec<Vec<&str>>) -> Result<Vec<Vec<QuantumState>>, QuantumCircuitError> {
+pub struct UnparsedCircuit {
+    pub circuit: Vec<Vec<&str>>
+}
+
+#[derive(Clone)]
+pub struct ParsedCircuit {
+    pub circuit: Vec<GatesAtStep>
+}
+
+pub struct GatesAtStep {
+    pub gates: Vec<GateWithOperands>
+}
+
+pub struct GateWithOperands {
+    pub gate: QuantumGate,
+    pub operand_qubits: Vec<i32>,
+}
+
+pub struct CircuitStates {
+    pub states: Vec<QuantumStep>
+}
+
+pub struct QuantumStep {
+    pub step: Vec<(Vec<i32>, QuantumState)>
+}
+
+pub fn simulate_circuit(incoming_data: UnparsedCircuit) -> Result<CircuitStates>, QuantumCircuitError> {
     let validation_result = validate_grid_input(&incoming_data);
     if validation_result.is_err() {
         return Err(validation_result.unwrap_err());
     }
 
-    let circuit: Vec<Vec<(Vec<i32>, QuantumGate)>> = build_circuit_from_data(incoming_data);
+    let circuit: ParsedCircuit = build_circuit_from_data(incoming_data);
     
+    let states: CircuitStates = simulate(circuit);
+
+    Ok(states)
+}
+
+fn simulate(circuit_to_simulate: ParsedCircuit) -> CircuitStates {
     // Every time step is a list entry and in each time step there is a list of all states corresponding to groups of entangled qubits
     // at that time step.
-    let mut state_list: Vec<Vec<QuantumState>> = vec![];
+    let mut state_list: CircuitStates = vec![];
     
-    let mut current_step: Vec<(Vec<i32>, QuantumState)> = vec![];
+    // TODO move this to helper function (initialize_qubit_states or something)
+    let mut initial_states: QuantumStep = vec![];
+    for (i, qubit) in circuit_to_simulate.circuit[0].iter().enumerate() {
+        initial_states.push(QuantumState::new(vec![i as i32]));
+    }
+    state_list.push(initial_states);
+
+    let mut states_before_step: QuantumStep = initial_states;
+    for (index, gates_at_step) in circuit_to_simulate.circuit.into_iter().enumerate() {
+        states_before_step = state_list[index];
+        state_after_step = step(states_before_step, gates_at_step);
+        state_list.push(state_after_step);
+    }
+
+    /*let mut current_step: Vec<QuantumState> = vec![];
     for (i, qubit) in circuit[0].iter().enumerate() {
         current_step.push(QuantumState::new(vec![i as i32]));
     }
@@ -41,9 +87,14 @@ pub fn simulate_circuit(incoming_data: Vec<Vec<&str>>) -> Result<Vec<Vec<Quantum
             states_at_step.push(state_after_gate);
         }
         state_list.push(states_at_step);
-    }
 
-    Ok(state_list)
+        
+    }*/
+    state_list
+}
+
+fn step(states_before: QuantumStep, gates_at_step: GatesAtStep) -> QuantumStep {
+    // TODO
 }
 
 fn is_unordered_sublist_of(small_list: [T], large_list: [T]) -> bool {
