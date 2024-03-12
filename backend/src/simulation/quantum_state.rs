@@ -60,7 +60,7 @@ impl QuantumState {
     }
 
     // Combine this quantum state with another.
-    pub fn combine(self, other_state: QuantumState) -> QuantumState {
+    pub fn combine_into_state(self, other_state: QuantumState) -> QuantumState {
         // TODO
         QuantumState { self.qubits, self.col}
     }
