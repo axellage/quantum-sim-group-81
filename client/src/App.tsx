@@ -87,12 +87,18 @@ function App() {
       {/*<button onClick={addQubit}>+</button>
       <button onClick={removeQubit}>-</button>*/}
       <button onClick={sendCircuit}>send circuit</button>
+      <States />
+    </div>)
+  }
+
+  function States() {
+    return (
       <section className="states">
         {states.map((timeStep) => (
         <h2>{JSON.stringify(timeStep.state)}</h2>
         ))}
       </section>
-    </div>)
+    );
   }
   
   function QubitLine(props:any) {
