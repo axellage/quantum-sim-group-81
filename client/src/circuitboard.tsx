@@ -10,9 +10,7 @@ import {CSS} from '@dnd-kit/utilities';
 import axios from 'axios';
 
 function Circuitboard(circuit: string[][]){
-    const [states, setStates] = useState([{"step":0, "state":[]}]);
     const [qubitLines, setQubitLines] = useState<ReactNode[]>([]);
-    console.log(states);
 
     useEffect(() => {
       setQubitLines([
@@ -79,38 +77,6 @@ function Circuitboard(circuit: string[][]){
         );
       }
 
-    function States() {
-        return (
-          <section className="states">
-            {states.map((timeStep) => (
-            <h2>{JSON.stringify(timeStep.state)}</h2>
-            ))}
-          </section>
-        );
-    }
-
-    async function sendCircuit() {
-        console.log("Sending circuit: " + convertToOldVersion(circuit));
-        const response = await axios.post('http://localhost:8000/simulate',
-            {circuit_matrix: convertToOldVersion(circuit)})
-      .then(function(response: any){
-        console.log(response);
-        setStates(response.data.state_list);
-      })}
-    
-      function convertToOldVersion(newCircuit:any){
-        for(let i = 0; i < newCircuit.length - 1; i++){
-          for(let j = 0; j < newCircuit[0].length; j++){
-            if(newCircuit[i][j] == "C_down"){
-              newCircuit[i][j] = "CNOT-1";
-              newCircuit[i + 1][j] = "CNOT-2";
-              //newCircuit = swapMatrixItem(newCircuit, i + 1, j, "CNOT-2")
-            }
-          }
-        }
-        return newCircuit;
-      }
-
     return(
     <div>
       <section className="circuit">
@@ -118,8 +84,6 @@ function Circuitboard(circuit: string[][]){
       </section>
       {/*<button onClick={addQubit}>+</button>
       <button onClick={removeQubit}>-</button>*/}
-      <button onClick={sendCircuit}>send circuit</button>
-      <States />
     </div>)
   }
   export default Circuitboard;

@@ -14,6 +14,8 @@ function App() {
   // This matrix doesn't contain actual elements, just information about what the circuit looks like.
   const [circuit, setCircuit] = useState([["I","I","I","I"], ["I","I","I","I"], ["I","I","I","I"], ["I","I","I","I"], ["I","I","I","I"], ["I","I","I","I"]]);
   // Initializing this because it complains about type otherwise, there is probably a better way to do it.
+  const [states, setStates] = useState([{"step":0, "state":[]}]);
+
 
   // TODO implement setCircuit (aka add + and - buttons).
 
@@ -22,6 +24,8 @@ function App() {
       <DndContext onDragEnd={handleDragEnd}>
         <Toolbar />
         <Circuitboard {...circuit}/> {/*shallow copy of circuit to circuitboard, solve for it to be in circuitboard later*/}
+        <button onClick={sendCircuit}>send circuit</button>
+        <States />
       </DndContext>
     </div>
   );
@@ -60,7 +64,38 @@ function App() {
     setCircuit(newCircuit);
   }
 
-  
+  async function sendCircuit() {
+    console.log("Sending circuit: " + convertToOldVersion(circuit));
+    const response = await axios.post('http://localhost:8000/simulate',
+        {circuit_matrix: convertToOldVersion(circuit)})
+  .then(function(response: any){
+    console.log(response);
+    setStates(response.data.state_list);
+  })}
+
+  function convertToOldVersion(newCircuit:string[][]){
+    for(let i = 0; i < newCircuit.length - 1; i++){
+      for(let j = 0; j < newCircuit[0].length; j++){
+        if(newCircuit[i][j] == "C_down"){
+          newCircuit[i][j] = "CNOT-1";
+          newCircuit[i + 1][j] = "CNOT-2";
+          //newCircuit = swapMatrixItem(newCircuit, i + 1, j, "CNOT-2")
+        }
+      }
+    }
+    return newCircuit;
+  }
+
+  function States() {
+    return (
+      <section className="states">
+        {states.map((timeStep) => (
+        <h2>{JSON.stringify(timeStep.state)}</h2>
+        ))}
+      </section>
+    );
+}
+
 
   /*function swapMatrixItem(matrix:string[][], y:number, x:number, newItem:string){
     const newMatrix = matrix.map((line, i) => {
@@ -78,23 +113,6 @@ function App() {
     });
   }*/
 }
-
-/*function PlacedControlGate(props:any, event:any){
-  
-  // Display nothing if there is no placed gate (which is the same as the identity gate).
-  //const {active, over} = event;
-
-  
-  if(props.name == "."){
-    return (
-      <button className = "placedGate">
-        <h1>{props.name}</h1>
-      </button>
-    );
-  } else return null;
-  
-  
-}*/
 
 
 
