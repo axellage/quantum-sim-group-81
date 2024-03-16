@@ -16,7 +16,7 @@ function Slot(props:any) {
 
     // TODO: Move to CSS.
     const style = {
-      opacity: (isOver ? .8 : 1),
+      opacity: (isOver ? .8 : 1)
     };
 
     /*if(props.gateType == "."){
