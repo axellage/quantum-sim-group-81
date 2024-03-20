@@ -82,12 +82,20 @@ function App() {
     return newCircuit;
   }
 
+  function getState(step: number) {
+    let allStates: string[] = [];
+
+    states.map((timeStep) => (
+      allStates.push(JSON.stringify(timeStep.state))
+    ))
+
+    return allStates[step];
+  }
+
   function States() {
     return (
       <section className="states">
-        {states.map((timeStep) => (
-        <h2>{JSON.stringify(timeStep.state)}</h2>
-        ))}
+        <h2>{getState(2)}</h2>
       </section>
     );
 }
