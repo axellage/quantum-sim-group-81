@@ -5,8 +5,7 @@ import Toolbar from './toolbar';
 import {DndContext} from '@dnd-kit/core';
 import axios from 'axios';
 import Circuitboard from './circuitboard';
-//import './slider.css'
-//import './thumb.css'
+import './slider.css'
 
 function App() {
   // This matrix doesn't contain actual elements, just information about what the circuit looks like.
@@ -25,11 +24,6 @@ function App() {
     sendCircuit();
   }, [circuit]);
 
-function Slider({ onChange } : {onChange:any}) {
-  return (
-    null
-  )
-}
   // TODO implement setCircuit (aka add + and - buttons).
 
   return (
@@ -37,16 +31,23 @@ function Slider({ onChange } : {onChange:any}) {
       <DndContext onDragEnd={handleDragEnd}>
         <Toolbar />
         <Circuitboard {...circuit}/> {/*shallow copy of circuit to circuitboard, solve for it to be in circuitboard later*/}
-        <button onClick={sendCircuit}>send circuit</button>
+        {/*<button onClick={sendCircuit}>send circuit</button>*/}
         <div className='slider-container'>
           <input
             type='range'
             min={1}
             max={4}
+            defaultValue={4}
             step={1}
             className='range'
             onChange={onChange}
           />
+          <div className='step-numbers'>
+            <p>1</p>
+            <p>2</p>
+            <p>3</p>
+            <p>4</p>
+          </div>
         </div>
         <States />
       </DndContext>
