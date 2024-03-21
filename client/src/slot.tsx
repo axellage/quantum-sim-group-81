@@ -1,13 +1,8 @@
 import React, { useState, ReactNode, useEffect } from 'react';
-import './App.css';
-import './circuitboard.css';
+import './slot.css';
 import './toolbar.css';
-import Toolbar from './toolbar';
 import PlacedGate from './placedGate';
-import {DndContext} from '@dnd-kit/core';
-import {useDraggable, useDroppable} from '@dnd-kit/core';
-import {CSS} from '@dnd-kit/utilities';
-import axios from 'axios';
+import {useDroppable} from '@dnd-kit/core';
 
 function Slot(props:any) {
     const {isOver, setNodeRef} = useDroppable({

@@ -1,12 +1,5 @@
 import React, { useState, ReactNode, useEffect } from 'react';
-import './App.css';
-import './circuitboard.css';
-import './toolbar.css';
-import Toolbar from './toolbar';
-import {DndContext} from '@dnd-kit/core';
-import {useDraggable, useDroppable} from '@dnd-kit/core';
-import {CSS} from '@dnd-kit/utilities';
-import axios from 'axios';
+import './gate.css';
 
 function PlacedGate(props:any){
   

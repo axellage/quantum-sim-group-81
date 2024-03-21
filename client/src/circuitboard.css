@@ -23,6 +23,11 @@ p {
     font-size: larger;
 }
 
+h2 {
+  color: white;
+  font-size: larger;
+}
+
 hr {
     width: 80%;
     margin-inline-start: 2.5rem;
@@ -68,9 +73,4 @@ button:active {
 
 .slot-container > *:hover {
    background-color: #1d2025;
-}
-
-Slot {
-  position: absolute;
-  z-index: 10;
 }
