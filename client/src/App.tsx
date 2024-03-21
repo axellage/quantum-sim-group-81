@@ -1,10 +1,12 @@
-import React, { useState, ReactNode, useEffect } from 'react';
+import React, { useState, ReactNode, useEffect, useRef } from 'react';
 import './circuitboard.css';
 import './toolbar.css';
 import Toolbar from './toolbar';
 import {DndContext} from '@dnd-kit/core';
 import axios from 'axios';
 import Circuitboard from './circuitboard';
+//import './slider.css'
+//import './thumb.css'
 
 function App() {
   // This matrix doesn't contain actual elements, just information about what the circuit looks like.
@@ -12,7 +14,22 @@ function App() {
   // Initializing this because it complains about type otherwise, there is probably a better way to do it.
   const [states, setStates] = useState([{"step":0, "state":[]}]);
 
+  const [stepNumber, setStepNumber] = useState(0)
+  const onChange = (e:any) => {
+    setStepNumber(e.target!.value)
+    console.log(stepNumber)
+  }
 
+  useEffect(() => {
+    // This effect will be triggered whenever the circuit state changes
+    sendCircuit();
+  }, [circuit]);
+
+function Slider({ onChange } : {onChange:any}) {
+  return (
+    null
+  )
+}
   // TODO implement setCircuit (aka add + and - buttons).
 
   return (
@@ -21,13 +38,24 @@ function App() {
         <Toolbar />
         <Circuitboard {...circuit}/> {/*shallow copy of circuit to circuitboard, solve for it to be in circuitboard later*/}
         <button onClick={sendCircuit}>send circuit</button>
+        <div className='slider-container'>
+          <input
+            type='range'
+            min={1}
+            max={4}
+            step={1}
+            className='range'
+            onChange={onChange}
+          />
+        </div>
         <States />
       </DndContext>
     </div>
   );
   
+  
 
-  function handleDragEnd(event:any){
+function handleDragEnd(event:any){
     const {active, over} = event;
     console.log(over.id[0]);
     if(active.id == "C_down"){
@@ -58,7 +86,9 @@ function App() {
       } 
     });
     setCircuit(newCircuit);
+    
   }
+  
 
   async function sendCircuit() {
     console.log("Sending circuit: " + convertToOldVersion(circuit));
@@ -95,7 +125,7 @@ function App() {
   function States() {
     return (
       <section className="states">
-        <h2>{getState(2)}</h2>
+        <h2>{getState(stepNumber)}</h2>
       </section>
     );
 }
