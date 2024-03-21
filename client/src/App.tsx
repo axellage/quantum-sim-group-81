@@ -1,4 +1,4 @@
-import React, { useState, ReactNode, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import './circuitboard.css';
 import './toolbar.css';
 import Toolbar from './toolbar';
@@ -13,12 +13,10 @@ function App() {
   // Initializing this because it complains about type otherwise, there is probably a better way to do it.
   const [states, setStates] = useState([{"step":0, "state":[]}]);
 
-  const [stepNumber, setStepNumber] = useState(0)
+  const [stepNumber, setStepNumber] = useState(4)
   const onChange = (e:any) => {
     setStepNumber(e.target!.value)
-    console.log(stepNumber)
   }
-
   useEffect(() => {
     // This effect will be triggered whenever the circuit state changes
     sendCircuit();
