@@ -122,6 +122,10 @@ function handleDragEnd(event:any){
   }
 
   function States() {
+    //parses back to JSON object
+    let state = JSON.parse(getState(stepNumber)); 
+    console.log(state[0])
+    
     return (
       <section className="states">
         <h2>{getState(stepNumber)}</h2>
