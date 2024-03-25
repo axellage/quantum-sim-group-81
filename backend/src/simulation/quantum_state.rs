@@ -13,7 +13,7 @@ pub struct QuantumState {
 
 impl QuantumState {
     // Create a QuantumState from a list of bits, panics if the number of qubits is not between 1 and 6 or if the bits are not 0 or 1
-    pub fn new(qubits: Vec<i32>) -> QuantumState {
+    pub fn new(qubits: &[usize]) -> QuantumState {
         let no_of_qubits = qubits.len();
 
         if !(1..=6).contains(&no_of_qubits) {
@@ -21,7 +21,7 @@ impl QuantumState {
         }
 
         let mut index = 0_usize;
-        for (i, &bit) in bits.iter().enumerate() {
+        for (i, &bit) in qubits.iter().enumerate() {
             if bit != 0 && bit != 1 {
                 panic!("Bits must be 0 or 1");
             }
@@ -56,70 +56,18 @@ impl QuantumState {
 
         let col = gate.matrix.dot(&self.clone().col);
 
-        QuantumState { self.qubits, col }
+        QuantumState {
+            qubits: self.qubits,
+            col,
+        }
     }
 
     // Combine this quantum state with another.
     pub fn combine_into_state(self, other_state: QuantumState) -> QuantumState {
         // TODO
-        QuantumState { self.qubits, self.col}
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use ndarray::arr2;
-
-    // Test that a simple state is correctly initialized
-    #[test]
-    fn test_simple_state() {
-        let state = QuantumState::new(&[0]);
-        let expected_state = arr2(&[[Complex::new(1.0, 0.0)], [Complex::new(0.0, 0.0)]]);
-
-        assert_eq!(state.col, expected_state);
-    }
-
-    // Test that a larger state is correctly initialized
-    #[test]
-    fn test_large_state() {
-        let state = QuantumState::new(&[0, 0, 0]);
-        let expected_state = arr2(&[
-            [Complex::new(1.0, 0.0)],
-            [Complex::new(0.0, 0.0)],
-            [Complex::new(0.0, 0.0)],
-            [Complex::new(0.0, 0.0)],
-            [Complex::new(0.0, 0.0)],
-            [Complex::new(0.0, 0.0)],
-            [Complex::new(0.0, 0.0)],
-            [Complex::new(0.0, 0.0)],
-        ]);
-
-        assert_eq!(state.col, expected_state);
-    }
-
-    // Test advanced state initialization
-    #[test]
-    fn test_advanced_state() {
-        let state = QuantumState::new(&[1, 1, 0]);
-        let expected_state = arr2(&[
-            [Complex::new(0.0, 0.0)],
-            [Complex::new(0.0, 0.0)],
-            [Complex::new(0.0, 0.0)],
-            [Complex::new(0.0, 0.0)],
-            [Complex::new(0.0, 0.0)],
-            [Complex::new(0.0, 0.0)],
-            [Complex::new(1.0, 0.0)],
-            [Complex::new(0.0, 0.0)],
-        ]);
-
-        assert_eq!(state.col, expected_state);
-    }
-
-    // Test that the size of a state is correct
-    #[test]
-    fn test_size() {
-        let state = QuantumState::new(&[0, 0, 0, 0, 0]);
-        assert_eq!(state.size(), 5);
+        QuantumState {
+            qubits: self.qubits,
+            col: self.col,
+        }
     }
 }

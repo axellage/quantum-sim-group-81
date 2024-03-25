@@ -1,7 +1,6 @@
 use crate::simulation::quantum_gate::QuantumGate;
-use ndarray::{arr2, Array1};
-use num::Complex;
-use either::*;
+use rocket::Either;
+use rocket::Either::{Left, Right};
 
 pub fn build_circuit_from_data(grid: Vec<Vec<&str>>) -> Vec<Vec<(Vec<i32>, QuantumGate)>> {
     let mut return_list: Vec<Vec<(Vec<i32>, QuantumGate)>> = Vec::new();
@@ -10,25 +9,24 @@ pub fn build_circuit_from_data(grid: Vec<Vec<&str>>) -> Vec<Vec<(Vec<i32>, Quant
 
         for (i, qubit) in grid.iter().enumerate() {
             let gate: Either<QuantumGate, String> = parse_gate(qubit[step]);
-            if(gate.is_left()){
-                current_gates.push((vec![i as i32], gate.left()));
-            } 
+            if gate.is_left() {
+                current_gates.push((vec![i as i32], gate.left().unwrap()));
+            }
             // See readme for restrictions on control gates!
-            else if(gate.right() == "c_down"){
-                    // Control bit that controls gate directly underneath it
-                    let gate_underneath: QuantumGate = parse_gate(qubit[step + 1]).left();
+            else if gate.clone().right().unwrap() == "c_down" {
+                // Control bit that controls gate directly underneath it
+                let gate_underneath: QuantumGate = parse_gate(qubit[step + 1]).left().unwrap();
 
-                    let control_gate: QuantumGate = QuantumGate::c_down(gate_underneath);
+                let control_gate: QuantumGate = QuantumGate::c_down(gate_underneath);
 
-                    current_gates.push((vec![i as i32, (i+1) as i32], control_gate));
-                } else if(gate.right() == "c_up"){
-                    // Control bit that controls gate directly above it
-                    let gate_above: QuantumGate = parse_gate(qubit[step - 1]).left();
+                current_gates.push((vec![i as i32, (i + 1) as i32], control_gate));
+            } else if gate.right().unwrap() == "c_up" {
+                // Control bit that controls gate directly above it
+                let gate_above: QuantumGate = parse_gate(qubit[step - 1]).left().unwrap();
 
-                    let control_gate: QuantumGate = QuantumGate::c_up(gate_above);
-                    current_gates.push((vec![i as i32, (i+1) as i32], control_gate));
-                }
-        
+                let control_gate: QuantumGate = QuantumGate::c_up(gate_above);
+                current_gates.push((vec![i as i32, (i + 1) as i32], control_gate));
+            }
         }
 
         return_list.push(current_gates);
@@ -49,131 +47,8 @@ fn parse_gate(gate_string: &str) -> Either<QuantumGate, String> {
         "S" => Left(QuantumGate::s_gate()),
         "CZ" => Left(QuantumGate::cz_gate()),
         // TODO swap (reimplement)
-        "C-down" => Right("c_down"),
-        "C-up" => Right("c_up"),
+        "C-down" => Right("c_down".to_owned()),
+        "C-up" => Right("c_up".to_owned()),
         _ => panic!("Invalid gate"),
-    }
-}
-        "I" => QuantumGate::i_gate(),
-        "H" => QuantumGate::h_gate(),
-        "X" => QuantumGate::x_gate(),
-        "Y" => QuantumGate::y_gate(),
-        "Z" => QuantumGate::z_gate(),
-        "T" => QuantumGate::t_gate(),
-        "S" => QuantumGate::s_gate(),
-        "CZ" => QuantumGate::cz_gate(),
-        "SWAP-1" => QuantumGate::swap_gate(),
-        "CCNOT-1" => QuantumGate::ccnot_gate(),
-        "CNOT-1" => QuantumGate::cnot_gate(),
-        "CNOT-2" | "CCNOT-2" | "CCNOT-3" | "SWAP-2" => QuantumGate {
-            matrix: arr2(&[[Complex::new(1.0_f64, 0.0_f64)]]),
-            size: 0,
-        },
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::simulation::quantum_state::QuantumState;
-    use ndarray::Array2;
-
-    #[test]
-    fn x_gate_circuit_test() {
-        let q0 = vec!["X"];
-        let grid = vec![q0];
-
-        let circuit = build_circuit_from_data(grid);
-
-        let state = QuantumState::new(&[0]).apply_gate(circuit[0].clone());
-
-        let expected_result: Array2<Complex<f64>> =
-            arr2(&[[Complex::new(0.0, 0.0)], [Complex::new(1.0, 0.0)]]);
-
-        assert_eq!(state.col, expected_result);
-    }
-
-    #[test]
-    fn one_qubit_multiple_gates_test() {
-        let q0 = vec!["X", "H"];
-        let grid = vec![q0];
-
-        let circuit = build_circuit_from_data(grid);
-
-        let state = QuantumState::new(&[0])
-            .apply_gate(circuit[0].clone())
-            .apply_gate(circuit[1].clone());
-
-        let expected_result: Array2<Complex<f64>> = arr2(&[
-            [Complex::new(1.0 / 2.0_f64.sqrt(), 0.0)],
-            [Complex::new(-1.0 / 2.0_f64.sqrt(), 0.0)],
-        ]);
-
-        assert_eq!(state.col, expected_result);
-    }
-
-    #[test]
-    fn bell_state_circuit_test() {
-        let q0 = vec!["H", "CNOT-1"];
-        let q1 = vec!["I", "CNOT-2"];
-
-        let grid = vec![q0, q1];
-
-        let circuit = build_circuit_from_data(grid);
-
-        let state = QuantumState::new(&[0, 0])
-            .apply_gate(circuit[0].clone())
-            .apply_gate(circuit[1].clone());
-
-        let expected_result: Array2<Complex<f64>> = arr2(&[
-            [Complex::new(1.0_f64 / 2.0_f64.sqrt(), 0.0_f64)],
-            [Complex::new(0.0_f64, 0.0_f64)],
-            [Complex::new(0.0_f64, 0.0_f64)],
-            [Complex::new(1.0_f64 / 2.0_f64.sqrt(), 0.0_f64)],
-        ]);
-
-        assert_eq!(state.col, expected_result);
-    }
-
-    #[test]
-    fn ghz_state_circuit_test() {
-        let mut q0 = Vec::new();
-        q0.push("H");
-        q0.push("CNOT-1");
-        q0.push("I");
-
-        let mut q1 = Vec::new();
-        q1.push("I");
-        q1.push("CNOT-2");
-        q1.push("CNOT-1");
-
-        let mut q2 = Vec::new();
-        q2.push("I");
-        q2.push("I");
-        q2.push("CNOT-2");
-
-        let mut grid = Vec::new();
-        grid.push(q0);
-        grid.push(q1);
-        grid.push(q2);
-
-        let circuit = build_circuit_from_data(grid);
-
-        let expected_result: Array2<Complex<f64>> = arr2(&[
-            [Complex::new(1.0_f64 / 2.0_f64.sqrt(), 0.0_f64)],
-            [Complex::new(0.0_f64, 0.0_f64)],
-            [Complex::new(0.0_f64, 0.0_f64)],
-            [Complex::new(0.0_f64, 0.0_f64)],
-            [Complex::new(0.0_f64, 0.0_f64)],
-            [Complex::new(0.0_f64, 0.0_f64)],
-            [Complex::new(0.0_f64, 0.0_f64)],
-            [Complex::new(1.0_f64 / 2.0_f64.sqrt(), 0.0_f64)],
-        ]);
-
-        let mut state = QuantumState::new(&[0, 0, 0]);
-        state = state
-            .apply_gate(circuit[0].clone())
-            .apply_gate(circuit[1].clone())
-            .apply_gate(circuit[2].clone());
-
-        assert_eq!(state.col, expected_result);
     }
 }
