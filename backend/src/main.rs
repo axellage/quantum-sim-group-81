@@ -13,19 +13,20 @@ use serde::{Deserialize, Serialize};
 use rocket::http::Status;
 use rocket::response::{self, Responder, Response};
 use rocket::Request;
+use crate::simulation::quantum_state::QuantumStep;
 
 #[derive(Serialize, Deserialize)]
 struct IncomingData {
     circuit_matrix: Vec<Vec<String>>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 struct Step {
     step: usize,
     state: Vec<ComplexContainer>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 struct ComplexContainer {
     re: f64,
     im: f64,
@@ -33,7 +34,7 @@ struct ComplexContainer {
 
 #[derive(Serialize, Deserialize)]
 struct OutgoingData {
-    state_list: Vec<Step>,
+    state_list: Vec<QuantumStep>,
 }
 
 #[derive(Debug, Serialize)]
