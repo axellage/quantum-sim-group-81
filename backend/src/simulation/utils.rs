@@ -23,7 +23,7 @@ pub fn to_little_endian(state: &QuantumState) -> QuantumState {
         new_vec[[reversed_index, 0]] = state.col[[i, 0]];
     }
 
-    QuantumState { col: new_vec }
+    QuantumState { col: new_vec, qubits: state.qubits }
 }
 
 fn reverse_bits(mut x: usize, n: usize) -> usize {

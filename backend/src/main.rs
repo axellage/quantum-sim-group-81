@@ -35,7 +35,7 @@ struct ComplexContainer {
 
 #[derive(Serialize, Deserialize)]
 struct OutgoingData {
-    state_list: Vec<Vec<QuantumState>>,
+    state_list: CircuitStates,
 }
 
 #[derive(Debug, Serialize)]
@@ -60,11 +60,11 @@ fn simulate_circuit_handler(
 ) -> Result<Json<OutgoingData>, ApiError> {
     let binding = incoming_data.into_inner();
 
-    let matrix = binding
+    let matrix = new UnparsedCircuit(binding
         .circuit_matrix
         .iter()
         .map(|row| row.iter().map(|item| item.as_str()).collect())
-        .collect();
+        .collect());
 
     match simulation::simulator::simulate_circuit(matrix) {
         Ok(state_list) => {
